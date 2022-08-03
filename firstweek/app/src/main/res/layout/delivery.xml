@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="9"
+            android:text="우리집"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="사각"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="알림"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="사람"/>
+
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="검색창" />
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/delivery_one"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="배민1"
+                        android:textSize="30sp"></TextView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/delivery_one"
+                        android:text="한 번에 한 집만\n빠르게 배달해요!"
+                        android:textSize="15sp">
+                    </TextView>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/delivery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="배달"
+                        android:textSize="30sp">
+                    </TextView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/delivery"
+                        android:text="세상은 넓고\n맛집은 많다"
+                        android:textSize="15sp">
+                    </TextView>
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/take_out"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="포장"
+                        android:textSize="30sp">
+                    </TextView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/take_out"
+                        android:text="가까운 가게는 직접 가지로 가지요"
+                        android:textSize="15sp">
+                    </TextView>
+                </RelativeLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher_background"/>
+            </TableRow>
+
+            <TableRow>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/B_mart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="B마트"
+                        android:textSize="30sp">
+                    </TextView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/B_mart"
+                        android:text="지금 주문하면\nN분 후 도착!"
+                        android:textSize="15sp">
+                    </TextView>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/meal_kit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="밀키트/간편식"
+                        android:textSize="30sp">
+                    </TextView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/meal_kit"
+                        android:text="뚝딱 만드는\n근사한 한끼"
+                        android:textSize="15sp">
+                    </TextView>
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/baemin_store"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="배민스토어"
+                        android:textSize="30dp">
+                    </TextView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/baemin_store"
+                        android:text="꾸까의 예쁜 꽃을 바로 배달!"
+                        android:textSize="15sp">
+                    </TextView>
+                </RelativeLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher_background"/>
+            </TableRow>
+
+            <TableRow>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/shopping_live_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_launcher_background"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/shopping_live_icon"
+                        android:layout_centerHorizontal="true"
+                        android:text="쇼핑라이브"
+                        android:textSize="20sp">
+                    </TextView>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/gift_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_launcher_background"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/gift_icon"
+                        android:layout_centerHorizontal="true"
+                        android:text="선물하기"
+                        android:textSize="20sp">
+                    </TextView>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/tasty_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_launcher_background"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tasty_icon"
+                        android:layout_centerHorizontal="true"
+                        android:text="전국별미"
+                        android:textSize="20dp">
+                    </TextView>
+                </RelativeLayout>
+            </TableRow>
+
+        </TableLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        </FrameLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>
