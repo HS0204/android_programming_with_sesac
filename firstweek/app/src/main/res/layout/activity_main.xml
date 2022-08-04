@@ -6,733 +6,635 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:id="@+id/search_info_section"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="10sp"
-        android:paddingHorizontal="20sp">
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:drawableLeft="@drawable/ic_baseline_search_24"
-            android:drawablePadding="10sp"
-            android:hint="검색창"
-            android:textColorHighlight="@color/lightBlack"
-            android:textColorLink="@color/darkGray" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_baseline_calendar_today_24" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_baseline_favorite_24" />
-
-    </LinearLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_section"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/search_info_section"
-        android:paddingHorizontal="15sp">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/domestic_stocks_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:text="국내주식"
-            android:textColor="@color/lightBlack"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/overseas_stocks_btn"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/overseas_stocks_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:text="해외주식"
-            android:textColor="@color/darkGray"
-            app:layout_constraintLeft_toRightOf="@+id/domestic_stocks_btn"
-            app:layout_constraintRight_toLeftOf="@id/pension_btn"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/pension_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:text="연금/상품"
-            android:textColor="@color/darkGray"
-            app:layout_constraintLeft_toRightOf="@+id/overseas_stocks_btn"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <FrameLayout
-            android:id="@+id/view_section"
-            android:layout_width="match_parent"
-            android:layout_height="250sp"
-            android:background="@drawable/view_section_bg"
-            android:paddingHorizontal="15sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/overseas_stocks_btn">
-
-            <ImageView
-                android:id="@+id/domestic_stocks_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/domestic_stocks_img"
-                android:visibility="visible" />
-
-            <ImageView
-                android:id="@+id/overseas_stocks_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/overseas_stocks_img"
-                android:visibility="invisible" />
-
-            <ImageView
-                android:id="@+id/pension_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/pension_img"
-                android:visibility="invisible" />
-
-        </FrameLayout>
-
-        <GridLayout
-            android:id="@+id/notice_section"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15sp"
-            android:columnCount="2"
-            android:orientation="horizontal"
-            android:paddingVertical="2sp"
-            app:layout_constraintTop_toBottomOf="@+id/view_section">
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/bgColor"
+            android:paddingBottom="8sp">
+
+            <LinearLayout
+                android:id="@+id/search_info_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10sp"
+                android:paddingHorizontal="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:drawableLeft="@drawable/ic_baseline_search_24"
+                    android:drawablePadding="10sp"
+                    android:hint="검색창"
+                    android:textColorHighlight="@color/lightBlack"
+                    android:textColorLink="@color/darkGray" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:src="@drawable/ic_baseline_calendar_today_24" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:src="@drawable/ic_baseline_favorite_24" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/domestic_stocks_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:text="국내주식"
+                android:textColor="@color/lightBlack"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/overseas_stocks_btn"
+                app:layout_constraintTop_toBottomOf="@+id/search_info_section" />
+
+            <Button
+                android:id="@+id/overseas_stocks_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:text="해외주식"
+                android:textColor="@color/darkGray"
+                app:layout_constraintLeft_toRightOf="@+id/domestic_stocks_btn"
+                app:layout_constraintRight_toLeftOf="@id/pension_btn"
+                app:layout_constraintTop_toBottomOf="@+id/search_info_section" />
+
+            <Button
+                android:id="@+id/pension_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:text="연금/상품"
+                android:textColor="@color/darkGray"
+                app:layout_constraintLeft_toRightOf="@+id/overseas_stocks_btn"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/search_info_section" />
+
+            <FrameLayout
+                android:id="@+id/view_section"
+                android:layout_width="match_parent"
+                android:layout_height="250sp"
+                android:background="@drawable/view_section_bg"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/overseas_stocks_btn">
+
+                <ImageView
+                    android:id="@+id/domestic_stocks_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/domestic_stocks_img"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/overseas_stocks_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/overseas_stocks_img"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:id="@+id/pension_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/pension_img"
+                    android:visibility="invisible" />
+
+            </FrameLayout>
+
+            <GridLayout
+                android:id="@+id/notice_section"
+                android:layout_width="match_parent"
+                android:layout_height="100sp"
+                android:layout_marginTop="15sp"
+                android:columnCount="1"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingVertical="2sp"
+                app:layout_constraintTop_toBottomOf="@+id/view_section">
+
+            </GridLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_section">
 
             <TextView
-                android:layout_width="408dp"
+                android:id="@+id/my_stocks_head"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_rowSpan="1"
-                android:layout_columnSpan="2"
-                android:layout_gravity="fill"
-                android:text="공모주 청약"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="12sp"
+                android:paddingHorizontal="15sp"
+                android:text="나의 종목 시세"
+                android:textColor="@color/lightBlack"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_columnWeight="1"
-                android:text="쏘카" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_columnWeight="1"
-                android:text="수산인더스트리" />
-
-        </GridLayout>
-
-        <TextView
-            android:id="@+id/my_stocks_head"
-            android:layout_width="103dp"
-            android:layout_height="24dp"
-            android:layout_gravity="fill"
-            android:layout_marginVertical="12sp"
-            android:text="나의 주식 현황"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notice_section" />
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/my_stocks_sections"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:paddingVertical="2sp"
-            app:layout_constraintTop_toBottomOf="@+id/my_stocks_head">
-
-            <TableLayout
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/lightGray">
-
-                <TableRow android:background="@color/bgColor">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="30sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="종목명" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="30sp"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="현재가" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="30sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="대비" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="30sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="등락률" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="192dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="1sp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50sp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="NULL"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="test" />
-
-                </TableRow>
-
-            </TableLayout>
-
-        </androidx.core.widget.NestedScrollView>
-
+                android:layout_marginTop="12sp"
+                android:layout_marginRight="20sp"
+                android:layout_alignParentRight="true"
+                android:text="더보기 >"/>
+
+            <Button
+                android:id="@+id/recent_stocks_btn"
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/my_stocks_head"
+                android:layout_marginLeft="15sp"
+                android:backgroundTint="@color/lightBlack"
+                android:text="최근종목"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/haved_stocks_btn"
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/my_stocks_head"
+                android:layout_toRightOf="@+id/recent_stocks_btn"
+                android:layout_marginLeft="6sp"
+                android:backgroundTint="@color/lightGray"
+                android:text="보유종목"
+                android:textColor="@color/darkGray"
+                android:textStyle="normal"/>
+
+            <Button
+                android:id="@+id/interesting_stocks_btn"
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/my_stocks_head"
+                android:layout_toRightOf="@+id/haved_stocks_btn"
+                android:layout_marginLeft="6sp"
+                android:backgroundTint="@color/lightGray"
+                android:text="관심종목"
+                android:textColor="@color/darkGray"
+                android:textStyle="normal"/>
+
+            <ScrollView
+                android:id="@+id/my_stocks_sections"
+                android:layout_width="match_parent"
+                android:layout_height="300sp"
+                android:layout_below="@id/recent_stocks_btn"
+                android:fillViewport="true"
+                android:paddingHorizontal="15sp"
+                android:paddingVertical="2sp">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/lightGray">
+
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="TIGER 미국S&amp;P500"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="13,650"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+1.15%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="삼성전자"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="61,700"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.65%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="NULL"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00,000"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.00%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="NULL"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00,000"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.00%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="NULL"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00,000"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.00%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="NULL"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00,000"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.00%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="NULL"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00,000"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.00%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="NULL"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00,000"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.00%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="NULL"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00,000"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.00%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="NULL"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00,000"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.00%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="NULL"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00,000"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.00%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_marginBottom="1sp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp"
+                            android:layout_weight="4"
+                            android:gravity="center_vertical"
+                            android:text="NULL"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightBlack"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00,000"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_margin="10sp"
+                            android:background="@drawable/stock_bg"
+                            android:backgroundTint="@color/lightRed"
+                            android:text="+0.00%"
+                            android:textStyle="bold"
+                            android:textColor="@color/red"/>
+
+                    </TableRow>
+
+                </TableLayout>
+
+            </ScrollView>
+
+        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
