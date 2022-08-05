@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="270sp"
+    android:layout_height="220sp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="20sp"
+    android:layout_marginLeft="20sp"
+    android:outlineProvider="none">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/video_music_image"
+            android:layout_width="match_parent"
+            android:layout_height="160sp"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/video_music_title"
+            android:layout_width="match_parent"
+            android:layout_height="30sp"
+            android:text="곡 제목"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/video_music_image"
+            app:layout_constraintVertical_bias="0.2" />
+
+        <TextView
+            android:id="@+id/video_music_singer"
+            android:layout_width="match_parent"
+            android:layout_height="20sp"
+            android:text="가수 이름"
+            app:layout_constraintTop_toBottomOf="@id/video_music_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

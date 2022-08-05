@@ -10,15 +10,20 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import hs.project.secondweek.databinding.ActivityMainBinding
+import hs.project.secondweek.databinding.FragmentHomeBinding
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val mainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val homeBinding by lazy { FragmentHomeBinding.inflate(layoutInflater) }
 
     private lateinit var homeFragment: HomeFragment
     private lateinit var music4UFragment: Music4UFragment
@@ -33,14 +38,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity - onCreate() 호출")
-        setContentView(binding.root)
+        setContentView(mainBinding.root)
 
         homeFragment = HomeFragment.newInstance()
-        supportFragmentManager.beginTransaction().add(binding.viewSection.id, homeFragment).commit()
+        supportFragmentManager.beginTransaction().add(mainBinding.viewSection.id, homeFragment).commit()
 
-        binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
+        mainBinding.bottomNavigation.setOnNavigationItemSelectedListener(this)
 
-        binding.musicPlayerSection.setOnClickListener {
+        // 음악 재생 activity 인텐트
+        mainBinding.musicPlayerSection.setOnClickListener {
             val intent = Intent(this, MusicActivity::class.java)
             startActivity(intent)
         }
@@ -86,27 +92,27 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             R.id.menu_home -> {
                 Log.d(TAG, "MainActivity - 홈 클릭")
                 homeFragment = HomeFragment.newInstance()
-                transaction.replace(binding.viewSection.id, homeFragment, "home")
+                transaction.replace(mainBinding.viewSection.id, homeFragment, "home")
             }
             R.id.menu_music4U -> {
                 Log.d(TAG, "MainActivity - 뮤직4U 클릭")
                 music4UFragment = Music4UFragment.newInstance()
-                transaction.replace(binding.viewSection.id, music4UFragment, "music4U")
+                transaction.replace(mainBinding.viewSection.id, music4UFragment, "music4U")
             }
             R.id.menu_my_music -> {
                 Log.d(TAG, "MainActivity - 내 음악 클릭")
                 myMusicFragment = MyMusicFragment.newInstance()
-                transaction.replace(binding.viewSection.id, myMusicFragment, "myMusic")
+                transaction.replace(mainBinding.viewSection.id, myMusicFragment, "myMusic")
             }
             R.id.menu_searching -> {
                 Log.d(TAG, "MainActivity - 탐색 클릭")
                 searchingFragment = SearchingFragment.newInstance()
-                transaction.replace(binding.viewSection.id, searchingFragment, "searching")
+                transaction.replace(mainBinding.viewSection.id, searchingFragment, "searching")
             }
             R.id.menu_always -> {
                 Log.d(TAG, "MainActivity - 24/7 클릭")
                 alwaysFragment = AlwaysFragment.newInstance()
-                transaction.replace(binding.viewSection.id, alwaysFragment, "always")
+                transaction.replace(mainBinding.viewSection.id, alwaysFragment, "always")
             }
         }
         transaction.addToBackStack(null)
@@ -143,7 +149,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
 
         super.onBackPressed()
-        updateBottomMenu(binding.bottomNavigation)
+        updateBottomMenu(mainBinding.bottomNavigation)
     }
 
 }
