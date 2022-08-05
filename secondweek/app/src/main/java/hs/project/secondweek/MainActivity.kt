@@ -1,13 +1,18 @@
 package hs.project.secondweek
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import hs.project.secondweek.databinding.ActivityMainBinding
 import kotlin.system.exitProcess
 
@@ -34,6 +39,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         supportFragmentManager.beginTransaction().add(binding.viewSection.id, homeFragment).commit()
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
+
+        binding.musicPlayerSection.setOnClickListener {
+            val intent = Intent(this, MusicActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 

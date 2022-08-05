@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MusicActivity">
+
+    <ImageView
+        android:id="@+id/album_art"
+        android:layout_width="match_parent"
+        android:layout_height="400sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@mipmap/ic_launcher" />
+
+    <SeekBar
+        android:id="@+id/music_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/album_art"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/music_current_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20sp"
+        app:layout_constraintTop_toBottomOf="@id/music_bar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/music_end_time"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:text="00:00"/>
+    <TextView
+        android:id="@+id/music_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20sp"
+        app:layout_constraintTop_toBottomOf="@id/music_bar"
+        app:layout_constraintLeft_toRightOf="@id/music_current_time"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="3:00"/>
+
+    <ImageView
+        android:id="@+id/shared_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:layout_marginLeft="30sp"
+        app:layout_constraintTop_toBottomOf="@id/music_current_time"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/favorite_icon"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:src="@drawable/ic_baseline_home_24"/>
+    <ImageView
+        android:id="@+id/favorite_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        app:layout_constraintTop_toBottomOf="@id/music_current_time"
+        app:layout_constraintLeft_toRightOf="@id/shared_icon"
+        app:layout_constraintRight_toLeftOf="@id/option_icon"
+        android:src="@drawable/ic_baseline_home_24"/>
+    <ImageView
+        android:id="@+id/option_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:layout_marginRight="30sp"
+        app:layout_constraintTop_toBottomOf="@id/music_current_time"
+        app:layout_constraintLeft_toRightOf="@id/favorite_icon"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/ic_baseline_home_24"/>
+
+    <TextView
+        android:id="@+id/music_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/favorite_icon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="곡 제목"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/music_singer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="10sp"
+        app:layout_constraintTop_toBottomOf="@id/music_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/repeat_icon"
+        android:text="가수 이름"
+        android:textSize="17sp"/>
+
+    <ImageView
+        android:id="@+id/repeat_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80sp"
+        android:layout_marginLeft="30sp"
+        app:layout_constraintTop_toBottomOf="@id/music_singer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/before_icon"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:src="@drawable/ic_baseline_home_24"/>
+    <ImageView
+        android:id="@+id/before_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80sp"
+        app:layout_constraintTop_toBottomOf="@id/music_singer"
+        app:layout_constraintLeft_toRightOf="@id/repeat_icon"
+        app:layout_constraintRight_toLeftOf="@id/pause_icon"
+        android:src="@drawable/ic_baseline_home_24"/>
+    <ImageView
+        android:id="@+id/pause_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80sp"
+        app:layout_constraintTop_toBottomOf="@id/music_singer"
+        app:layout_constraintLeft_toRightOf="@id/before_icon"
+        app:layout_constraintRight_toLeftOf="@id/next_icon"
+        android:src="@drawable/ic_baseline_home_24"/>
+    <ImageView
+        android:id="@+id/next_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80sp"
+        app:layout_constraintTop_toBottomOf="@id/music_singer"
+        app:layout_constraintLeft_toRightOf="@id/pause_icon"
+        app:layout_constraintRight_toLeftOf="@id/mix_icon"
+        android:src="@drawable/ic_baseline_home_24"/>
+    <ImageView
+        android:id="@+id/mix_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80sp"
+        android:layout_marginRight="30sp"
+        app:layout_constraintTop_toBottomOf="@id/music_singer"
+        app:layout_constraintLeft_toRightOf="@id/next_icon"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/ic_baseline_home_24"/>
+
+    <TextView
+        android:id="@+id/eq_option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30sp"
+        android:layout_marginBottom="10sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/relative_music"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:text="EQ ACC 128k"/>
+
+    <TextView
+        android:id="@+id/relative_music"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10sp"
+        android:text="연관곡"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/eq_option"
+        app:layout_constraintRight_toLeftOf="@id/music_list" />
+
+    <ImageView
+        android:id="@+id/music_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30sp"
+        android:layout_marginBottom="10sp"
+        app:layout_constraintLeft_toRightOf="@id/relative_music"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_baseline_home_24"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
