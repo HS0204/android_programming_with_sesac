@@ -3,12 +3,16 @@ package hs.project.secondweek
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import hs.project.secondweek.Data.NewMusicData
+import hs.project.secondweek.Data.RecommendedMusicData
+import hs.project.secondweek.Data.VideoMusicData
 import hs.project.secondweek.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
@@ -47,9 +51,20 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         mainBinding.bottomNavigation.selectedItemId = R.id.menu_home
         mainBinding.bottomNavigation.setOnNavigationItemSelectedListener(this)
 
+        // 음악 제목, 가수 이름 흐르게
+        mainBinding.musicTitle.isSingleLine = true
+        mainBinding.musicTitle.isSelected = true
+        mainBinding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+
+        mainBinding.musicSinger.isSingleLine = true
+        mainBinding.musicSinger.isSelected = true
+        mainBinding.musicSinger.ellipsize = TextUtils.TruncateAt.MARQUEE
+
         // 음악 재생 activity 인텐트
         mainBinding.musicPlayerSection.setOnClickListener {
             val intent = Intent(this, PlayerMusicActivity::class.java)
+            intent.putExtra("musicTitle", "${mainBinding.musicTitle.text}")
+            intent.putExtra("musicSinger", "${mainBinding.musicSinger.text}")
             startActivity(intent)
         }
 
@@ -113,6 +128,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "MainActivity - onDestroy() 호출")
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(TAG, "MainActivity - onActivityResult() 호출")
 
     }
 

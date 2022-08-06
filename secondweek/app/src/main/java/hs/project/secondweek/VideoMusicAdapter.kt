@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import hs.project.secondweek.Data.VideoMusicData
 
 class VideoMusicAdapter(private val dataList : ArrayList<VideoMusicData>) :
     RecyclerView.Adapter<VideoMusicAdapter.VideoMusicViewHolder>() {

@@ -222,8 +222,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/music_singer"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:text="곡 제목"
-                android:textSize="18sp"/>
+                android:text="@string/music_title"
+                android:textSize="18sp" />
             <TextView
                 android:id="@+id/music_singer"
                 android:layout_width="match_parent"
@@ -232,7 +232,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:text="가수 이름"/>
+                android:text="@string/music_singer" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
