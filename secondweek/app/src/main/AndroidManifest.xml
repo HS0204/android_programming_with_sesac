@@ -14,7 +14,22 @@
         android:theme="@style/Theme.SecondWeek"
         tools:targetApi="31">
         <activity
-            android:name=".MusicActivity"
+            android:name=".AlwaysActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SearchingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MymusicActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Music4uActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PlayerMusicActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

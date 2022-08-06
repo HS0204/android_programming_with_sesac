@@ -6,15 +6,195 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/view_section"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </FrameLayout>
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/top_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15sp"
+                android:paddingLeft="20sp"
+                app:layout_constraintBottom_toTopOf="@id/recommended_music_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/home_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="홈"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/voucher_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@id/home_text"
+                    android:layout_marginRight="-42dp"
+                    android:src="@drawable/ic_baseline_home_24" />
+
+                <ImageView
+                    android:id="@+id/mic_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/alert_icon"
+                    android:layout_marginLeft="-55sp"
+                    android:src="@drawable/ic_baseline_home_24" />
+
+                <ImageView
+                    android:id="@+id/alert_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/option_icon"
+                    android:layout_marginLeft="-55sp"
+                    android:src="@drawable/ic_baseline_home_24" />
+
+                <ImageView
+                    android:id="@+id/option_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="25sp"
+                    android:src="@drawable/ic_baseline_home_24" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/recommended_music_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40sp"
+                android:paddingLeft="20sp"
+                android:text="lhanseul님을 위한 추천"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/top_section" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recommended_music_section"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recommended_music_header" />
+
+            <ImageView
+                android:id="@+id/image_slider"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/img"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recommended_music_section"
+                app:layout_constraintBottom_toTopOf="@id/new_music_header"/>
+
+            <TextView
+                android:id="@+id/new_music_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="50sp"
+                android:paddingLeft="20sp"
+                android:text="최신 음악 >"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image_slider"
+                app:layout_constraintBottom_toTopOf="@id/new_music_section" />
+            <TextView
+                android:id="@+id/new_music_header_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/new_music_header"
+                app:layout_constraintRight_toLeftOf="@id/new_music_header_domestic"
+                app:layout_constraintTop_toBottomOf="@id/image_slider"
+                app:layout_constraintBottom_toTopOf="@id/new_music_section"
+                android:text="전체"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/new_music_header_domestic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/new_music_header_all"
+                app:layout_constraintRight_toLeftOf="@id/new_music_header_oversea"
+                app:layout_constraintTop_toBottomOf="@id/image_slider"
+                app:layout_constraintBottom_toTopOf="@id/new_music_section"
+                android:text="국내"/>
+            <TextView
+                android:id="@+id/new_music_header_oversea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/new_music_header_domestic"
+                app:layout_constraintRight_toLeftOf="@id/new_music_header_connect"
+                app:layout_constraintTop_toBottomOf="@id/image_slider"
+                app:layout_constraintBottom_toTopOf="@id/new_music_section"
+                android:text="해외"/>
+            <TextView
+                android:id="@+id/new_music_header_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="15sp"
+                app:layout_constraintLeft_toRightOf="@id/new_music_header_oversea"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image_slider"
+                app:layout_constraintBottom_toTopOf="@id/new_music_section"
+                android:text="커넥트"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/new_music_section"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/new_music_header" />
+
+            <TextView
+                android:id="@+id/video_music_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40sp"
+                android:paddingLeft="20sp"
+                android:text="영상 >"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/new_music_section" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/video_music_section"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/video_music_header" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="600sp"
+                app:layout_constraintTop_toBottomOf="@id/video_music_section"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/music_player_section"
@@ -67,7 +247,6 @@
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_home_24"/>
 
-
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -78,6 +257,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:itemTextColor="@drawable/bottom_nav_selector"
+        app:itemIconTint="@drawable/bottom_nav_selector"
         app:labelVisibilityMode="labeled" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
