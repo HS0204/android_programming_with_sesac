@@ -55,6 +55,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         Log.d(TAG, "MainActivity - onCreate() 호출")
         setContentView(binding.root)
 
+        requestRuntimePermission()
+
         binding.bottomNavigation.selectedItemId = R.id.menu_home
         binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
 
@@ -80,20 +82,20 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             overridePendingTransition(0,0)
         }
 
-        requestRuntimePermission()
-
     }
 
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "MainActivity - onStart() 호출")
-        initializeData()
+        if (requestRuntimePermission())
+            initializeData()
     }
 
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "MainActivity - onResume() 호출")
-        initializeLayout()
+        if (requestRuntimePermission())
+            initializeLayout()
     }
 
     override fun onPause() {
@@ -219,11 +221,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         videoMusicRecyclerView.adapter = videoMusicAdapter
     }
 
-    private fun requestRuntimePermission() {
+    private fun requestRuntimePermission(): Boolean {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 13)
+            return false
         }
+        return true
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

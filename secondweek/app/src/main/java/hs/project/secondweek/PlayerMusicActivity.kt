@@ -1,9 +1,12 @@
 package hs.project.secondweek
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.ServiceConnection
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
 import android.text.TextUtils
 import android.util.Log
 import com.bumptech.glide.Glide
@@ -11,19 +14,21 @@ import com.bumptech.glide.request.RequestOptions
 import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.databinding.ActivityPlayermusicBinding
 
-class PlayerMusicActivity : AppCompatActivity() {
+class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
     private val binding by lazy { ActivityPlayermusicBinding.inflate(layoutInflater) }
 
     companion object {
         const val TAG: String = "MYLOG"
 
-        private lateinit var musicList: ArrayList<MusicInfoData>
-        private var musicPosition: Int = 0
+        lateinit var musicList: ArrayList<MusicInfoData>
+        var musicPosition: Int = 0
 
-        lateinit var player: MediaPlayer
+        //lateinit var player: MediaPlayer
         var isPlaying: Boolean = true
         var isShuffling: Boolean = false
+
+        var musicService: MusicService? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +36,10 @@ class PlayerMusicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        initializeData()
-        initializeLayout(isShuffling)
-        createMusicPlayer()
+        // 서비스 시작
+        val intent = Intent(this, MusicService::class.java)
+        bindService(intent, this, BIND_AUTO_CREATE)
+        //startService(intent)
 
         binding.controlIcon.setOnClickListener {
             if (isPlaying) pauseMusic()
@@ -46,12 +52,6 @@ class PlayerMusicActivity : AppCompatActivity() {
         binding.previousIcon.setOnClickListener { prevNextMusic(increment = false) }
         binding.nextIcon.setOnClickListener { prevNextMusic(increment = true) }
 
-        // 제목 흐르게 세팅
-        binding.musicTitle.isSingleLine = true
-        binding.musicTitle.isSelected = true
-        binding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
-
-        // 음악 리스트 activity 인텐트
         binding.musicList.setOnClickListener {
             val intent = Intent(this, ListMusicActivity::class.java)
             startActivity(intent)
@@ -63,6 +63,12 @@ class PlayerMusicActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "PlayerMusicActivity - onStart() 호출")
+        binding.musicTitle.isSingleLine = true
+        binding.musicTitle.isSelected = true
+        binding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+
+        initializeData()
+        initializeLayout(isShuffling)
     }
 
     override fun onResume() {
@@ -88,6 +94,7 @@ class PlayerMusicActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "PlayerMusicActivity - onDestroy() 호출")
+        releaseMusicPlayer()
     }
 
     private fun initializeData() {
@@ -113,30 +120,30 @@ class PlayerMusicActivity : AppCompatActivity() {
 
     private fun createMusicPlayer() {
         try {
-            player = MediaPlayer()
+            musicService!!.player = MediaPlayer()
 
-            player.reset()
-            player.setDataSource(musicList[musicPosition].path)
-            player.prepare()
-            player.start()
+            musicService!!.player.reset()
+            musicService!!.player.setDataSource(musicList[musicPosition].path)
+            musicService!!.player.prepare()
+            musicService!!.player.start()
 
             isPlaying = true
             binding.controlIcon.setImageResource(R.drawable.icon_pause)
 
-            Log.d(TAG, "PlayerMusicActivity - 음악 플레이어 $player 생성, 재생 음악 ${musicList[musicPosition].title}")
+            Log.d(TAG, "PlayerMusicActivity - 음악 플레이어 ${musicService!!.player} 생성, 재생 음악 ${musicList[musicPosition].title}")
         }catch (e:Exception){return}
     }
 
     private fun playMusic() {
         binding.controlIcon.setImageResource(R.drawable.icon_pause)
         isPlaying = true
-        player.start()
+        musicService!!.player.start()
     }
 
     private fun pauseMusic() {
         binding.controlIcon.setImageResource(R.drawable.icon_playing)
         isPlaying = false
-        player.pause()
+        musicService!!.player.pause()
     }
 
     private fun onShuffle() {
@@ -157,14 +164,14 @@ class PlayerMusicActivity : AppCompatActivity() {
         if (increment){
             Log.d(TAG, "PlayerMusicActivity - Next 버튼 클릭")
             setMusicPosition(increment = true)
-            killMusicPlayer()
+            releaseMusicPlayer()
             initializeLayout(isShuffling)
             createMusicPlayer()
         }
         else{
             Log.d(TAG, "PlayerMusicActivity - Previous 버튼 클릭")
             setMusicPosition(increment = false)
-            killMusicPlayer()
+            releaseMusicPlayer()
             initializeLayout(isShuffling)
             createMusicPlayer()
         }
@@ -183,15 +190,28 @@ class PlayerMusicActivity : AppCompatActivity() {
         }
     }
 
-    private fun killMusicPlayer() {
-        Log.d(TAG, "PlayerMusicActivity - 음악 플레이어 $player 삭제")
-        player.stop()
-        player.release()
+    private fun releaseMusicPlayer() {
+        Log.d(TAG, "PlayerMusicActivity - 음악 플레이어 ${musicService!!.player} 삭제")
+        musicService!!.player.release()
     }
 
     override fun onBackPressed() {
         Log.d(TAG, "PlayerMusicActivity - onBackPressed() 호출")
         super.onBackPressed()
+        onStop()
         overridePendingTransition(0,0)
+    }
+
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+        Log.d(TAG, "PlayerMusicActivity - 서비스 시작")
+        val binder = service as MusicService.MusicBinder
+        musicService = binder.currentService()
+        createMusicPlayer()
+        musicService!!.showNotification()
+    }
+
+    override fun onServiceDisconnected(name: ComponentName?) {
+        Log.d(TAG, "PlayerMusicActivity - 서비스 종료")
+        musicService = null
     }
 }
