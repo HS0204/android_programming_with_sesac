@@ -1,5 +1,6 @@
 package hs.project.secondweek
 
+import android.annotation.SuppressLint
 import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
@@ -56,7 +57,6 @@ class PlayerMusicActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "PlayerMusicActivity - onStop() 호출")
-        releasePlayer()
     }
 
     override fun onRestart() {
@@ -67,7 +67,7 @@ class PlayerMusicActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "PlayerMusicActivity - onDestroy() 호출")
-
+        releasePlayer()
     }
 
     private fun createMusicPlayer(musicId: Int) {
@@ -108,6 +108,7 @@ class PlayerMusicActivity : AppCompatActivity() {
             }
         }
 
+        seekBar.max = player.duration
         seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
@@ -124,7 +125,6 @@ class PlayerMusicActivity : AppCompatActivity() {
         Log.d(TAG, "PlayerMusicActivity - initialiseSeekBar() 호출")
         val controlBtn = playermusicBinding.controlIcon
         val seekBar = playermusicBinding.musicBar
-        seekBar.max = player.duration
 
         val handler = Handler()
         handler.postDelayed(object: Runnable {
@@ -132,6 +132,9 @@ class PlayerMusicActivity : AppCompatActivity() {
                 try {
                     seekBar.progress = player.currentPosition
                     handler.postDelayed(this, 1000)
+
+                    settingMusicTime()
+
                     if(!player.isLooping && seekBar.progress == seekBar.max){
                         seekBar.progress = 0
                         controlBtn.setImageResource(R.drawable.icon_playing)
@@ -141,6 +144,33 @@ class PlayerMusicActivity : AppCompatActivity() {
                 }
             }
         },0)
+    }
+
+    private fun musicTimeCal(time: Int): String {
+        lateinit var timeLabel: String
+        var min = time / 1000 / 60
+        var sec = time / 1000 % 60
+
+        timeLabel = "$min:"
+        if (sec < 10) {
+            timeLabel += "0"
+        }
+        timeLabel += sec
+
+        return timeLabel
+    }
+
+    private fun settingMusicTime() {
+        var currentTime = musicTimeCal(player.currentPosition)
+        var remainingTime = musicTimeCal((player.duration) - player.currentPosition)
+
+        playermusicBinding.musicCurrentTime.text = currentTime
+        playermusicBinding.musicRemainingTime.text = remainingTime
+
+        if(!player.isPlaying) {
+            playermusicBinding.musicCurrentTime.text = "00:00"
+            playermusicBinding.musicRemainingTime.text = musicTimeCal(player.duration)
+        }
     }
 
     private fun loadMusic() {
