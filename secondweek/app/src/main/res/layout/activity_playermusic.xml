@@ -129,11 +129,11 @@
                 android:layout_weight="1"
                 android:src="@drawable/icon_repeat_one_music"/>
             <ImageView
-                android:id="@+id/before_icon"
+                android:id="@+id/previous_icon"
                 android:layout_width="50sp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/icon_music_before"/>
+                android:src="@drawable/icon_music_previous"/>
             <ImageView
                 android:id="@+id/control_icon"
                 android:layout_width="50sp"
@@ -151,7 +151,7 @@
                 android:layout_width="50sp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/icon_shuffle"/>
+                android:src="@drawable/icon_shuffle_on"/>
 
         </LinearLayout>
 

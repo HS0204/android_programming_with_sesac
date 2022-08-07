@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import hs.project.secondweek.Adapter.MusicListAdapter
 import hs.project.secondweek.Adapter.NewMusicAdapter
 import hs.project.secondweek.Adapter.RecommendedMusicAdapter
 import hs.project.secondweek.Adapter.VideoMusicAdapter
@@ -69,8 +70,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         // 음악 재생 activity 인텐트
         binding.musicPlayerSection.setOnClickListener {
             val intent = Intent(this, PlayerMusicActivity::class.java)
-            intent.putExtra("musicTitle", "${binding.musicTitle.text}")
-            intent.putExtra("musicSinger", "${binding.musicSinger.text}")
             startActivity(intent)
         }
 
