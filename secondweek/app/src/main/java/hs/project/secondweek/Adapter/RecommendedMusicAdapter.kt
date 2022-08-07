@@ -1,19 +1,19 @@
-package hs.project.secondweek
+package hs.project.secondweek.Adapter
 
+import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import hs.project.secondweek.Data.RecommendedMusicData
+import hs.project.secondweek.databinding.LayoutRecommendedMusicBinding
 
-class RecommendedMusicAdapter(private val dataList : ArrayList<RecommendedMusicData>) :
+class RecommendedMusicAdapter(private val context: Context, private val dataList : ArrayList<RecommendedMusicData>) :
     RecyclerView.Adapter<RecommendedMusicAdapter.RecommendedMusicViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendedMusicViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.layout_recommended_music, parent, false)
-        return RecommendedMusicViewHolder(itemView)
+        return RecommendedMusicViewHolder(LayoutRecommendedMusicBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
     override fun onBindViewHolder(holder: RecommendedMusicViewHolder, position: Int) {
@@ -26,8 +26,8 @@ class RecommendedMusicAdapter(private val dataList : ArrayList<RecommendedMusicD
         return dataList.size
     }
 
-    class RecommendedMusicViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val stationImage : ImageView = itemView.findViewById(R.id.station_image)
-        val stationTxt : TextView = itemView.findViewById(R.id.station_text)
+    class RecommendedMusicViewHolder(binding: LayoutRecommendedMusicBinding) : RecyclerView.ViewHolder(binding.root) {
+        val stationImage : ImageView = binding.stationImage
+        val stationTxt : TextView = binding.stationText
     }
 }

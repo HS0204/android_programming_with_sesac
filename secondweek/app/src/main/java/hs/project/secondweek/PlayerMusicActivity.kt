@@ -1,6 +1,7 @@
 package hs.project.secondweek
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +33,13 @@ class PlayerMusicActivity : AppCompatActivity() {
         playermusicBinding.musicTitle.isSingleLine = true
         playermusicBinding.musicTitle.isSelected = true
         playermusicBinding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+
+        // 음악 리스트 activity 인텐트
+        playermusicBinding.musicList.setOnClickListener {
+            val intent = Intent(this, ListMusicActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(0,0)
+        }
 
     }
 
@@ -151,7 +159,11 @@ class PlayerMusicActivity : AppCompatActivity() {
         var min = time / 1000 / 60
         var sec = time / 1000 % 60
 
-        timeLabel = "$min:"
+        timeLabel = if (min < 10) {
+            "0$min:"
+        }else {
+            "$min:"
+        }
         if (sec < 10) {
             timeLabel += "0"
         }

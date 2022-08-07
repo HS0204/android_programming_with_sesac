@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="15dp"
+    tools:context=".ListMusicActivity">
+
+    <TextView
+        android:id="@+id/list_header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="재생목록"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/searching_music"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/list_header_toggle"/>
+    <ImageView
+        android:id="@+id/list_header_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_home_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/searching_music"
+        app:layout_constraintLeft_toRightOf="@id/list_header_text" />
+    <ImageView
+        android:id="@+id/list_header_option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_baseline_home_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/searching_music"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <EditText
+        android:id="@+id/searching_music"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:drawableLeft="@drawable/icon_favorite"
+        android:hint="곡명 또는 아티스트명을 입력하세요"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/list_header_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <Switch
+        android:id="@+id/selected_mode_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searching_music" />
+    <TextView
+        android:id="@+id/selected_mode_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="선택 곡 듣기"
+        app:layout_constraintBaseline_toBaselineOf="@id/selected_mode_switch"
+        app:layout_constraintStart_toEndOf="@+id/selected_mode_switch"
+        app:layout_constraintTop_toBottomOf="@+id/searching_music" />
+    <TextView
+        android:id="@+id/selected_mode_my_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="내 정렬순"
+        app:layout_constraintBaseline_toBaselineOf="@id/selected_mode_switch"
+        app:layout_constraintEnd_toStartOf="@+id/selected_mode_edit"
+        app:layout_constraintStart_toEndOf="@+id/selected_mode_text"
+        app:layout_constraintTop_toBottomOf="@+id/searching_music" />
+    <TextView
+        android:id="@+id/selected_mode_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:text="편집"
+        app:layout_constraintBaseline_toBaselineOf="@id/selected_mode_switch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searching_music" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/music_list_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/selected_mode_switch" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/music_player_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:background="@color/music_player_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/music_title"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="@string/music_title"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toTopOf="@+id/music_singer"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/music_control"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/music_singer"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:text="@string/music_singer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/music_control"
+            app:layout_constraintTop_toBottomOf="@+id/music_title" />
+
+        <ImageView
+            android:id="@+id/music_control"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_playing"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/music_title"
+            app:layout_constraintRight_toLeftOf="@id/music_list"/>
+
+        <ImageView
+            android:id="@+id/music_list"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/album_art1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/music_control"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

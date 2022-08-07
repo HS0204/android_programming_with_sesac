@@ -96,7 +96,7 @@
             app:layout_constraintBottom_toTopOf="@id/music_singer"
             android:text="@string/music_title"
             android:textSize="25sp"
-            android:textStyle="bold"
+            android:textColor="@color/black"
             android:textAlignment="center"/>
 
         <TextView

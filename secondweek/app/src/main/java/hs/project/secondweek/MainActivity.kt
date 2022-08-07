@@ -1,15 +1,21 @@
 package hs.project.secondweek
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import hs.project.secondweek.Adapter.NewMusicAdapter
+import hs.project.secondweek.Adapter.RecommendedMusicAdapter
+import hs.project.secondweek.Adapter.VideoMusicAdapter
 import hs.project.secondweek.Data.NewMusicData
 import hs.project.secondweek.Data.RecommendedMusicData
 import hs.project.secondweek.Data.VideoMusicData
@@ -17,7 +23,7 @@ import hs.project.secondweek.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private val mainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private lateinit var recommendedRecyclerView: RecyclerView
     private lateinit var recommendedMusicAdapter : RecommendedMusicAdapter
@@ -46,68 +52,49 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity - onCreate() 호출")
-        setContentView(mainBinding.root)
+        setContentView(binding.root)
 
-        mainBinding.bottomNavigation.selectedItemId = R.id.menu_home
-        mainBinding.bottomNavigation.setOnNavigationItemSelectedListener(this)
+        binding.bottomNavigation.selectedItemId = R.id.menu_home
+        binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
 
         // 음악 제목, 가수 이름 흐르게
-        mainBinding.musicTitle.isSingleLine = true
-        mainBinding.musicTitle.isSelected = true
-        mainBinding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+        binding.musicTitle.isSingleLine = true
+        binding.musicTitle.isSelected = true
+        binding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
 
-        mainBinding.musicSinger.isSingleLine = true
-        mainBinding.musicSinger.isSelected = true
-        mainBinding.musicSinger.ellipsize = TextUtils.TruncateAt.MARQUEE
+        binding.musicSinger.isSingleLine = true
+        binding.musicSinger.isSelected = true
+        binding.musicSinger.ellipsize = TextUtils.TruncateAt.MARQUEE
 
         // 음악 재생 activity 인텐트
-        mainBinding.musicPlayerSection.setOnClickListener {
+        binding.musicPlayerSection.setOnClickListener {
             val intent = Intent(this, PlayerMusicActivity::class.java)
-            intent.putExtra("musicTitle", "${mainBinding.musicTitle.text}")
-            intent.putExtra("musicSinger", "${mainBinding.musicSinger.text}")
+            intent.putExtra("musicTitle", "${binding.musicTitle.text}")
+            intent.putExtra("musicSinger", "${binding.musicSinger.text}")
             startActivity(intent)
         }
 
-        dataInitialize()
+        // 음악 리스트 activity 인텐트
+        binding.musicList.setOnClickListener {
+            val intent = Intent(this, ListMusicActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(0,0)
+        }
+
+        requestRuntimePermission()
 
     }
 
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "MainActivity - onStart() 호출")
-
+        initializeData()
     }
 
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "MainActivity - onResume() 호출")
-
-        // 추천 곡
-        val recommendLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recommendedRecyclerView = mainBinding.recommendedMusicSection
-        recommendedRecyclerView.layoutManager = recommendLayoutManager
-        recommendedRecyclerView.setHasFixedSize(true)
-
-        recommendedMusicAdapter = RecommendedMusicAdapter(recommendedMusicDataArray)
-        recommendedRecyclerView.adapter = recommendedMusicAdapter
-
-        // 최신 곡
-        val newLayoutManager = GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
-        newMusicRecyclerView = mainBinding.newMusicSection
-        newMusicRecyclerView.layoutManager = newLayoutManager
-        newMusicRecyclerView.setHasFixedSize(true)
-
-        newMusicAdapter = NewMusicAdapter(newMusicDataArray)
-        newMusicRecyclerView.adapter = newMusicAdapter
-
-        // 영상
-        val videoLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        videoMusicRecyclerView = mainBinding.videoMusicSection
-        videoMusicRecyclerView.layoutManager = videoLayoutManager
-        videoMusicRecyclerView.setHasFixedSize(true)
-
-        videoMusicAdapter = VideoMusicAdapter(videoMusicDataArray)
-        videoMusicRecyclerView.adapter = videoMusicAdapter
+        initializeLayout()
     }
 
     override fun onPause() {
@@ -131,55 +118,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.d(TAG, "MainActivity - onActivityResult() 호출")
-
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.menu_home -> {
-                Log.d(TAG, "MainActivity - 홈 클릭")
-
-            }
-            R.id.menu_music4U -> {
-                Log.d(TAG, "MainActivity - 뮤직4U 클릭")
-                val intent = Intent(this, Music4uActivity::class.java)
-                startActivity(intent)
-                overridePendingTransition(0,0)
-            }
-            R.id.menu_my_music -> {
-                Log.d(TAG, "MainActivity - 내 음악 클릭")
-                val intent = Intent(this, MymusicActivity::class.java)
-                startActivity(intent)
-                overridePendingTransition(0,0)
-            }
-            R.id.menu_searching -> {
-                Log.d(TAG, "MainActivity - 탐색 클릭")
-                val intent = Intent(this, SearchingActivity::class.java)
-                startActivity(intent)
-                overridePendingTransition(0,0)
-            }
-            R.id.menu_always -> {
-                Log.d(TAG, "MainActivity - 24/7 클릭")
-                val intent = Intent(this, AlwaysActivity::class.java)
-                startActivity(intent)
-                overridePendingTransition(0,0)
-            }
-        }
-
-        return true
-    }
-
-    override fun onBackPressed() {
-        Log.d(TAG, "MainActivity - onBackPressed() 호출")
-        super.onBackPressed()
-        overridePendingTransition(0,0)
-
-    }
-
-    private fun dataInitialize() {
+    private fun initializeData() {
         Log.d(TAG, "MainActivity - 데이터 초기화")
 
         // 추천 곡
@@ -248,6 +187,104 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             val videoMusicData = VideoMusicData(videoImg[i], videoTxtTitle[i], videoTxtSinger[i])
             videoMusicDataArray.add(videoMusicData)
         }
+    }
+
+    private fun initializeLayout() {
+        Log.d(TAG, "MainActivity - 레이아웃 초기화")
+
+        // 추천 곡
+        val recommendLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recommendedRecyclerView = binding.recommendedMusicSection
+        recommendedRecyclerView.layoutManager = recommendLayoutManager
+        recommendedRecyclerView.setHasFixedSize(true)
+
+        recommendedMusicAdapter = RecommendedMusicAdapter(this, recommendedMusicDataArray)
+        recommendedRecyclerView.adapter = recommendedMusicAdapter
+
+        // 최신 곡
+        val newLayoutManager = GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
+        newMusicRecyclerView = binding.newMusicSection
+        newMusicRecyclerView.layoutManager = newLayoutManager
+        newMusicRecyclerView.setHasFixedSize(true)
+
+        newMusicAdapter = NewMusicAdapter(this, newMusicDataArray)
+        newMusicRecyclerView.adapter = newMusicAdapter
+
+        // 영상
+        val videoLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        videoMusicRecyclerView = binding.videoMusicSection
+        videoMusicRecyclerView.layoutManager = videoLayoutManager
+        videoMusicRecyclerView.setHasFixedSize(true)
+
+        videoMusicAdapter = VideoMusicAdapter(this, videoMusicDataArray)
+        videoMusicRecyclerView.adapter = videoMusicAdapter
+    }
+
+    private fun requestRuntimePermission() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 13)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 13) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "저장소 권한 있음", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 13)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(TAG, "MainActivity - onActivityResult() 호출")
+
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_home -> {
+                Log.d(TAG, "MainActivity - 홈 클릭")
+
+            }
+            R.id.menu_music4U -> {
+                Log.d(TAG, "MainActivity - 뮤직4U 클릭")
+                val intent = Intent(this, Music4uActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(0,0)
+            }
+            R.id.menu_my_music -> {
+                Log.d(TAG, "MainActivity - 내 음악 클릭")
+                val intent = Intent(this, MymusicActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(0,0)
+            }
+            R.id.menu_searching -> {
+                Log.d(TAG, "MainActivity - 탐색 클릭")
+                val intent = Intent(this, SearchingActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(0,0)
+            }
+            R.id.menu_always -> {
+                Log.d(TAG, "MainActivity - 24/7 클릭")
+                val intent = Intent(this, AlwaysActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(0,0)
+            }
+        }
+
+        return true
+    }
+
+    override fun onBackPressed() {
+        Log.d(TAG, "MainActivity - onBackPressed() 호출")
+        super.onBackPressed()
+        overridePendingTransition(0,0)
+
     }
 
 }
