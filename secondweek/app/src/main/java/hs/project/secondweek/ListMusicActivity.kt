@@ -1,15 +1,18 @@
 package hs.project.secondweek
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import hs.project.secondweek.Adapter.MusicListAdapter
-import hs.project.secondweek.Adapter.VideoMusicAdapter
+import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.Data.MusicListData
 import hs.project.secondweek.databinding.ActivityListmusicBinding
+import java.io.File
 
 class ListMusicActivity : AppCompatActivity() {
 
@@ -17,14 +20,15 @@ class ListMusicActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: MusicListAdapter
-    private lateinit var dataArray: ArrayList<MusicListData>
-    lateinit var img : Array<Int>
-    lateinit var musicTitle : Array<String>
-    lateinit var musicSinger : Array<String>
-    lateinit var musicTime : Array<String>
+    private lateinit var dataArray: ArrayList<MusicInfoData>
+    lateinit var img: Array<Int>
+    lateinit var musicTitle: Array<String>
+    lateinit var musicSinger: Array<String>
+    lateinit var musicTime: Array<String>
 
     companion object {
         const val TAG: String = "MYLOG"
+        val MusicListMA : ArrayList<MusicInfoData> = ArrayList()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,26 +76,8 @@ class ListMusicActivity : AppCompatActivity() {
 
     private fun initializeData() {
         Log.d(TAG, "ListMusicActivity - 데이터 초기화")
-        dataArray = arrayListOf<MusicListData>()
+        dataArray = getMusic()
 
-        img = arrayOf(
-            R.drawable.video_1, R.drawable.video_2, R.drawable.video_3, R.drawable.video_4
-        )
-
-        musicTitle = arrayOf(
-            "아는동생", "SMARTPHONE", "Attention", "FOREVER 1"
-        )
-
-        musicSinger = arrayOf(
-            "은비디아", "YENA (최예나)", "NewJeans", "소녀시대 (GIRLS' GENERATION)"
-        )
-
-        musicTime = arrayOf("0", "0", "0", "0")
-
-        for (i in img.indices) {
-            val musicData = MusicListData(img[i], musicTitle[i], musicSinger[i], musicTime[i])
-            dataArray.add(musicData)
-        }
     }
 
     private fun initializeLayout() {
@@ -106,10 +92,55 @@ class ListMusicActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
     }
 
+    @SuppressLint("Recycle", "Range")
+    private fun getMusic(): ArrayList<MusicInfoData> {
+        val tempList = ArrayList<MusicInfoData>()
+        val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
+        val projection = arrayOf(
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.DATE_ADDED,
+            MediaStore.Audio.Media.DATA
+        )
+        val cursor = this.contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            projection, selection, null, MediaStore.Audio.Media.DATE_ADDED + " DESC", null
+        )
+
+        if (cursor != null) {
+            if (cursor.moveToFirst())
+                do {
+                    val titleC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
+                    val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
+                    val albumC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
+                    val artistC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
+                    val pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
+                    val durationC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
+                    val music = MusicInfoData(
+                        id = idC,
+                        title = titleC,
+                        album = albumC,
+                        artist = artistC,
+                        path = pathC,
+                        duration = durationC
+                    )
+                    val file = File(music.path)
+                    if(file.exists()) {
+                        tempList.add(music)
+                    }
+                } while (cursor.moveToNext())
+            cursor.close()
+        }
+        return tempList
+    }
+
     override fun onBackPressed() {
         Log.d(TAG, "ListMusicActivity - onBackPressed() 호출")
         super.onBackPressed()
-        overridePendingTransition(0,0)
+        overridePendingTransition(0, 0)
 
     }
 }
