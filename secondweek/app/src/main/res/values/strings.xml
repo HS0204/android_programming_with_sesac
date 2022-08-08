@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">secondWeek</string>
-    <string name="music_title">L.O.V.E. (feat. EARTHGANG, Jon Batiste, Sherwyn)</string>
-    <string name="music_singer">Young Bae(영 배)</string>
+    <string name="music_title">곡 제목</string>
+    <string name="music_singer">가수</string>
     <string name="music_start_time">00:00</string>
 </resources>

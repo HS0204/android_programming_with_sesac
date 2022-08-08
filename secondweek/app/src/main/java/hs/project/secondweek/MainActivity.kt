@@ -69,8 +69,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         binding.musicSinger.isSelected = true
         binding.musicSinger.ellipsize = TextUtils.TruncateAt.MARQUEE
 
-        // 음악 재생 activity 인텐트
         binding.musicPlayerSection.setOnClickListener {
+            Log.d("MYLOG", "MainActivity -> 하단 음악 바를 클릭")
             val intent = Intent(this, PlayerMusicActivity::class.java)
             startActivity(intent)
         }
@@ -78,10 +78,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         // 음악 리스트 activity 인텐트
         binding.musicList.setOnClickListener {
             val intent = Intent(this, ListMusicActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)
             overridePendingTransition(0,0)
         }
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        Log.d(TAG, "!!!!!!!!재진입")
+        super.onNewIntent(intent)
     }
 
     override fun onStart() {

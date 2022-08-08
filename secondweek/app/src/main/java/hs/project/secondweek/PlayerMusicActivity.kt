@@ -1,6 +1,8 @@
 package hs.project.secondweek
 
+import android.app.ActivityManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.media.MediaPlayer
@@ -9,6 +11,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.text.TextUtils
 import android.util.Log
+import androidx.loader.content.AsyncTaskLoader
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import hs.project.secondweek.Data.MusicInfoData
@@ -36,11 +39,6 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        // 서비스 시작
-        val intent = Intent(this, MusicService::class.java)
-        bindService(intent, this, BIND_AUTO_CREATE)
-        //startService(intent)
-
         binding.controlIcon.setOnClickListener {
             if (isPlaying) pauseMusic()
             else playMusic()
@@ -51,13 +49,17 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         }
         binding.previousIcon.setOnClickListener { prevNextMusic(increment = false) }
         binding.nextIcon.setOnClickListener { prevNextMusic(increment = true) }
-
         binding.musicList.setOnClickListener {
             val intent = Intent(this, ListMusicActivity::class.java)
             startActivity(intent)
             overridePendingTransition(0,0)
         }
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        Log.d(TAG, "!!!!!!!!재진입")
+        super.onNewIntent(intent)
     }
 
     override fun onStart() {
@@ -67,13 +69,14 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         binding.musicTitle.isSelected = true
         binding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
 
+        startService()
         initializeData()
-        initializeLayout(isShuffling)
     }
 
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "PlayerMusicActivity - onResume() 호출")
+        initializeLayout(isShuffling)
     }
 
     override fun onPause() {
@@ -94,7 +97,13 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "PlayerMusicActivity - onDestroy() 호출")
-        releaseMusicPlayer()
+    }
+
+    private fun startService() {
+        // 서비스 시작
+        val intent = Intent(this, MusicService::class.java)
+        bindService(intent, this, BIND_AUTO_CREATE)
+        //startService(intent)
     }
 
     private fun initializeData() {
@@ -122,28 +131,29 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         try {
             musicService!!.player = MediaPlayer()
 
-            musicService!!.player.reset()
-            musicService!!.player.setDataSource(musicList[musicPosition].path)
-            musicService!!.player.prepare()
-            musicService!!.player.start()
+            musicService!!.player!!.reset()
+            musicService!!.player!!.setDataSource(musicList[musicPosition].path)
+            musicService!!.player!!.prepare()
+            musicService!!.player!!.start()
 
             isPlaying = true
             binding.controlIcon.setImageResource(R.drawable.icon_pause)
 
-            Log.d(TAG, "PlayerMusicActivity - 음악 플레이어 ${musicService!!.player} 생성, 재생 음악 ${musicList[musicPosition].title}")
+            Log.d(TAG, "PlayerMusicActivity - 음악 플레이어 ${musicService!!.player}에서 재생 음악 ${musicList[musicPosition].title}")
         }catch (e:Exception){return}
     }
 
     private fun playMusic() {
         binding.controlIcon.setImageResource(R.drawable.icon_pause)
         isPlaying = true
-        musicService!!.player.start()
+        musicService!!.player!!.start()
+        Log.d(TAG, "playMusic - 음악 플레이어 ${musicService!!.player}에서 재생 음악 ${musicList[musicPosition].title}")
     }
 
     private fun pauseMusic() {
         binding.controlIcon.setImageResource(R.drawable.icon_playing)
         isPlaying = false
-        musicService!!.player.pause()
+        musicService!!.player!!.pause()
     }
 
     private fun onShuffle() {
@@ -166,14 +176,16 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
             setMusicPosition(increment = true)
             releaseMusicPlayer()
             initializeLayout(isShuffling)
-            createMusicPlayer()
+            musicService!!.createMusicPlayer()
+            //createMusicPlayer()
         }
         else{
             Log.d(TAG, "PlayerMusicActivity - Previous 버튼 클릭")
             setMusicPosition(increment = false)
             releaseMusicPlayer()
             initializeLayout(isShuffling)
-            createMusicPlayer()
+            musicService!!.createMusicPlayer()
+            //createMusicPlayer()
         }
     }
 
@@ -192,13 +204,25 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
     private fun releaseMusicPlayer() {
         Log.d(TAG, "PlayerMusicActivity - 음악 플레이어 ${musicService!!.player} 삭제")
-        musicService!!.player.release()
+        musicService!!.player!!.release()
     }
 
     override fun onBackPressed() {
         Log.d(TAG, "PlayerMusicActivity - onBackPressed() 호출")
-        super.onBackPressed()
-        onStop()
+        //super.onBackPressed()
+
+        when (intent.getStringExtra("previousActivity")){
+            "ListMusicActivity"->{
+                val intent = Intent(this, ListMusicActivity::class.java)
+
+                startActivity(intent)
+            }
+            "MainActivity"->{
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
         overridePendingTransition(0,0)
     }
 
@@ -206,7 +230,7 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         Log.d(TAG, "PlayerMusicActivity - 서비스 시작")
         val binder = service as MusicService.MusicBinder
         musicService = binder.currentService()
-        createMusicPlayer()
+        musicService!!.createMusicPlayer()
         musicService!!.showNotification()
     }
 

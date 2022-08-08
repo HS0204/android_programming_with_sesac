@@ -1,16 +1,19 @@
 package hs.project.secondweek
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import hs.project.secondweek.Adapter.MusicListAdapter
 import hs.project.secondweek.Data.MusicInfoData
+import hs.project.secondweek.ListMusicActivity.Companion.dataArray
 import hs.project.secondweek.databinding.ActivityListmusicBinding
 import java.io.File
 
@@ -32,10 +35,22 @@ class ListMusicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        binding.musicPlayerSection.setOnClickListener {
+            Log.d("MYLOG", "ListMusicActivity -> 하단 음악 바를 클릭")
+            val intent = Intent(this, PlayerMusicActivity::class.java)
+            // intent.putExtra("position", PlayerMusicActivity.position)
+            startActivity(intent)
+        }
+
         // 제목 흐르게 세팅
         binding.musicTitle.isSingleLine = true
         binding.musicTitle.isSelected = true
         binding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        Log.d(PlayerMusicActivity.TAG, "!!!!!!!!재진입")
+        super.onNewIntent(intent)
     }
 
     override fun onStart() {
@@ -143,7 +158,7 @@ class ListMusicActivity : AppCompatActivity() {
     override fun onBackPressed() {
         Log.d(TAG, "ListMusicActivity - onBackPressed() 호출")
         super.onBackPressed()
-        overridePendingTransition(0, 0)
+        overridePendingTransition(0,0)
 
     }
 }

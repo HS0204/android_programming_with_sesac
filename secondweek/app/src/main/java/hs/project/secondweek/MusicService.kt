@@ -13,18 +13,21 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.widget.ImageView
 import androidx.media.app.NotificationCompat
 
 class MusicService: Service() {
     private var musicBinder = MusicBinder()
-    lateinit var player: MediaPlayer
     private lateinit var mediaSession: MediaSessionCompat
+
+    var player: MediaPlayer?= null
 
     private val TAG: String = "MYLOG"
 
     override fun onBind(intent: Intent?): IBinder {
         Log.d(TAG, "MusicService - onBind() 호출")
         mediaSession = MediaSessionCompat(baseContext, "music")
+
         return musicBinder
     }
 
@@ -36,12 +39,35 @@ class MusicService: Service() {
     override fun onDestroy() {
         Log.d(TAG, "MusicService - onDestroy() 호출")
         super.onDestroy()
+        releaseMusicPlayer()
     }
 
     inner class MusicBinder: Binder() {
         fun currentService(): MusicService {
             return this@MusicService
         }
+    }
+
+
+
+    fun createMusicPlayer() {
+        try {
+            PlayerMusicActivity.musicService!!.player = MediaPlayer()
+
+            PlayerMusicActivity.musicService!!.player!!.reset()
+            PlayerMusicActivity.musicService!!.player!!.setDataSource(PlayerMusicActivity.musicList[PlayerMusicActivity.musicPosition].path)
+            PlayerMusicActivity.musicService!!.player!!.prepare()
+            PlayerMusicActivity.musicService!!.player!!.start()
+
+            PlayerMusicActivity.isPlaying = true
+
+            Log.d(PlayerMusicActivity.TAG, "MusicService - 음악 플레이어 ${PlayerMusicActivity.musicService!!.player}에서 재생 음악 ${PlayerMusicActivity.musicList[PlayerMusicActivity.musicPosition].title}")
+        }catch (e:Exception){return}
+    }
+
+    private fun releaseMusicPlayer() {
+        Log.d(PlayerMusicActivity.TAG, "MusicService - 음악 플레이어 ${PlayerMusicActivity.musicService!!.player} 삭제")
+        PlayerMusicActivity.musicService!!.player!!.release()
     }
 
     fun showNotification() {
