@@ -1,4 +1,4 @@
-package hs.project.secondweek
+package hs.project.secondweek.Service
 
 import android.app.Application
 import android.app.Notification
@@ -15,6 +15,10 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.widget.ImageView
 import androidx.media.app.NotificationCompat
+import hs.project.secondweek.Adapter.musicPosition
+import hs.project.secondweek.ApplicationClass
+import hs.project.secondweek.PlayerMusicActivity
+import hs.project.secondweek.R
 
 class MusicService: Service() {
     private var musicBinder = MusicBinder()
@@ -50,21 +54,6 @@ class MusicService: Service() {
 
 
 
-    fun createMusicPlayer() {
-        try {
-            PlayerMusicActivity.musicService!!.player = MediaPlayer()
-
-            PlayerMusicActivity.musicService!!.player!!.reset()
-            PlayerMusicActivity.musicService!!.player!!.setDataSource(PlayerMusicActivity.musicList[PlayerMusicActivity.musicPosition].path)
-            PlayerMusicActivity.musicService!!.player!!.prepare()
-            PlayerMusicActivity.musicService!!.player!!.start()
-
-            PlayerMusicActivity.isPlaying = true
-
-            Log.d(PlayerMusicActivity.TAG, "MusicService - 음악 플레이어 ${PlayerMusicActivity.musicService!!.player}에서 재생 음악 ${PlayerMusicActivity.musicList[PlayerMusicActivity.musicPosition].title}")
-        }catch (e:Exception){return}
-    }
-
     private fun releaseMusicPlayer() {
         Log.d(PlayerMusicActivity.TAG, "MusicService - 음악 플레이어 ${PlayerMusicActivity.musicService!!.player} 삭제")
         PlayerMusicActivity.musicService!!.player!!.release()
@@ -72,9 +61,11 @@ class MusicService: Service() {
 
     fun showNotification() {
         Log.d(TAG, "MusicService - showNotification() 호출")
-        val notification = androidx.core.app.NotificationCompat.Builder(baseContext, ApplicationClass.CHANNEL_ID)
-            .setContentTitle(PlayerMusicActivity.musicList[PlayerMusicActivity.musicPosition].title)
-            .setContentText(PlayerMusicActivity.musicList[PlayerMusicActivity.musicPosition].artist)
+        val notification = androidx.core.app.NotificationCompat.Builder(baseContext,
+            ApplicationClass.CHANNEL_ID
+        )
+            .setContentTitle(PlayerMusicActivity.musicList[musicPosition].title)
+            .setContentText(PlayerMusicActivity.musicList[musicPosition].artist)
             .setSmallIcon(R.drawable.icon_music_list)
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.album_art1))
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSession.sessionToken))

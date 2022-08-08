@@ -7,19 +7,22 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import hs.project.secondweek.Adapter.MusicListAdapter
 import hs.project.secondweek.Adapter.NewMusicAdapter
 import hs.project.secondweek.Adapter.RecommendedMusicAdapter
 import hs.project.secondweek.Adapter.VideoMusicAdapter
+import hs.project.secondweek.Adapter.mediaPlayer
 import hs.project.secondweek.Data.NewMusicData
 import hs.project.secondweek.Data.RecommendedMusicData
 import hs.project.secondweek.Data.VideoMusicData
+import hs.project.secondweek.ListMusicActivity.Companion.Play
 import hs.project.secondweek.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
@@ -48,6 +51,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     companion object {
         const val TAG: String = "MYLOG"
+
+        var TitleN: TextView? = null
+        var ArtistN: TextView? = null
+        var PlayN: ImageView? = null
+        var List: ImageView? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,10 +63,23 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         Log.d(TAG, "MainActivity - onCreate() 호출")
         setContentView(binding.root)
 
+        TitleN = binding.musicTitle
+        ArtistN = binding.musicSinger
+        PlayN = binding.musicControl
+        List = binding.musicList
+
         requestRuntimePermission()
 
         binding.bottomNavigation.selectedItemId = R.id.menu_home
         binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
+
+        PlayN?.setOnClickListener {
+            Log.d(TAG, "MainActivity -> 음악 컨트롤 버튼 클릭")
+            if (mediaPlayer!!.isPlaying)
+                pauseMusic()
+            else if (mediaPlayer != null)
+                playMusic()
+        }
 
         // 음악 제목, 가수 이름 흐르게
         binding.musicTitle.isSingleLine = true
@@ -83,6 +104,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             overridePendingTransition(0,0)
         }
 
+    }
+
+    private fun pauseMusic() {
+        PlayN?.setImageResource(R.drawable.icon_playing)
+        mediaPlayer!!.pause()
+    }
+
+    private fun playMusic() {
+        PlayN?.setImageResource(R.drawable.icon_pause)
+        mediaPlayer!!.start()
     }
 
     override fun onNewIntent(intent: Intent?) {

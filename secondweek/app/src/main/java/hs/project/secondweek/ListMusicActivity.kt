@@ -5,29 +5,45 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
-import android.widget.Toast
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import hs.project.secondweek.Adapter.MusicListAdapter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import hs.project.secondweek.Adapter.*
 import hs.project.secondweek.Data.MusicInfoData
-import hs.project.secondweek.ListMusicActivity.Companion.dataArray
+import hs.project.secondweek.Service.MusicService
 import hs.project.secondweek.databinding.ActivityListmusicBinding
 import java.io.File
+
+// 서비스
+private var player: MusicService? = null
+var serviceBound = false
 
 class ListMusicActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityListmusicBinding.inflate(layoutInflater) }
 
+    var adapter: MusicListAdapter? = null
+
+
+
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: MusicListAdapter
+    private lateinit var dieAdapter: MusicListAdapter
 
     companion object {
         const val TAG: String = "MYLOG"
 
         lateinit var dataArray: ArrayList<MusicInfoData>
+        var Title: TextView? = null
+        var Artist: TextView? = null
+        var Play: ImageView? = null
+        var Cover: ImageView? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,17 +51,30 @@ class ListMusicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.musicPlayerSection.setOnClickListener {
-            Log.d("MYLOG", "ListMusicActivity -> 하단 음악 바를 클릭")
-            val intent = Intent(this, PlayerMusicActivity::class.java)
-            // intent.putExtra("position", PlayerMusicActivity.position)
-            startActivity(intent)
+        Title = binding.musicTitle
+        Artist = binding.musicSinger
+        Play = binding.musicControl
+        Cover = binding.musicList
+
+        Play?.setOnClickListener {
+            Log.d(TAG, "ListMusicActivity -> 음악 컨트롤 버튼 클릭")
+            if (mediaPlayer!!.isPlaying)
+                pauseMusic()
+            else if (mediaPlayer != null)
+                playMusic()
         }
 
-        // 제목 흐르게 세팅
-        binding.musicTitle.isSingleLine = true
-        binding.musicTitle.isSelected = true
-        binding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+
+        binding.musicPlayerSection.setOnClickListener {
+            Log.d("MYLOG", "ListMusicActivity -> 하단 음악 바 클릭")
+            if (mediaPlayer != null) {
+                val intent = Intent(this, PlayerMusicActivity::class.java)
+                startActivity(intent)
+            } else {
+                Log.d("MYLOG", "ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ")
+            }
+
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -53,16 +82,21 @@ class ListMusicActivity : AppCompatActivity() {
         super.onNewIntent(intent)
     }
 
+    private fun callStateListener() {}
+
+    private fun alarmStateListener() {    }
+
     override fun onStart() {
         Log.d(TAG, "ListMusicActivity - onStart() 호출")
         super.onStart()
         initializeData()
+        initializeMusicBar()
+        initializeLayout()
     }
 
     override fun onResume() {
         Log.d(TAG, "ListMusicActivity - onResume() 호출")
         super.onResume()
-        initializeLayout()
     }
 
     override fun onPause() {
@@ -99,8 +133,39 @@ class ListMusicActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
 
-        adapter = MusicListAdapter(this, dataArray)
-        recyclerView.adapter = adapter
+        dieAdapter = MusicListAdapter(this, dataArray)
+        recyclerView.adapter = dieAdapter
+
+    }
+
+    private fun initializeMusicBar() {
+        Log.d(TAG, "ListMusicActivity - 뮤직 재생 하단 바 초기화")
+        Title?.text = changeTextTitle
+        Artist?.text = changeTextArtist
+        Title?.isSingleLine = true
+        Title?.isSelected = true
+        Title?.ellipsize = TextUtils.TruncateAt.MARQUEE
+
+        if (mediaPlayer == null)
+            Play?.setImageResource(R.drawable.icon_playing)
+        else {
+            Play?.setImageResource(R.drawable.icon_pause)
+
+            /**
+             * 액티비티가 생성되고 나서 딱 한 번만 가능한데, 사용자가 버튼을 누를 때마다 업데이트가 되도록 어떻게 할 수 있을까?
+             * 커서를 이용해볼까?
+             * **/
+            if (!mediaPlayer!!.isPlaying) {
+                binding.musicList.setImageResource(R.drawable.icon_music_list)
+            }
+            else {
+                Glide.with(this).load(myListTrack[musicPosition].artUri).apply(
+                    RequestOptions()
+                        .placeholder(R.drawable.album_art1).centerCrop())
+                    .into(binding.musicList)
+            }
+        }
+
     }
 
     @SuppressLint("Recycle", "Range")
@@ -153,6 +218,16 @@ class ListMusicActivity : AppCompatActivity() {
             cursor.close()
         }
         return tempList
+    }
+
+    private fun pauseMusic() {
+        Play?.setImageResource(R.drawable.icon_playing)
+        mediaPlayer!!.pause()
+    }
+
+    private fun playMusic() {
+        Play?.setImageResource(R.drawable.icon_pause)
+        mediaPlayer!!.start()
     }
 
     override fun onBackPressed() {
