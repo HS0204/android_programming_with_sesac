@@ -10,22 +10,22 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.Data.formatDuration
 import hs.project.secondweek.ListMusicActivity
 import hs.project.secondweek.MainActivity
-import hs.project.secondweek.PlayerMusicActivity.Companion.musicList
 import hs.project.secondweek.R
 import hs.project.secondweek.databinding.LayoutMusicListBinding
 
 var adapter: MusicListAdapter? = null
 var mediaPlayer: MediaPlayer? = null
-var songe:MusicInfoData? = null
+var songe: MusicInfoData? = null
 var currentSongIndex = 0
 
 var changeTextTitle = "곡 제목"
 var changeTextArtist = "가수"
-lateinit var changeCover:ByteArray
+lateinit var changeCover: ByteArray
 
 var myListTrack = ArrayList<MusicInfoData>()
 var musicPosition = 0
@@ -34,10 +34,6 @@ class MusicListAdapter(
     private val context: Context,
     private val dataList: ArrayList<MusicInfoData>
 ) : RecyclerView.Adapter<MusicListAdapter.MusicListViewHolder>() {
-
-    companion object {
-        // var myListTrack = ArrayList<MusicInfoData>()
-    }
 
     init {
         Log.d("MYLOG", "MyTrackAdapter -> 뮤직 리스트 초기화")
@@ -74,14 +70,10 @@ class MusicListAdapter(
             songTitle.text = songInfo.title
             songArtist.text = songInfo.artist
             songTime.text = formatDuration(myListTrack[position].duration)
-            val image = myListTrack[position].artUri
-            if (image != null) {
-                Glide.with(context).asBitmap().load(myListTrack[position].artUri).into(setCover)
-            }
-            else {
-                // !! 이거 없어도 될 거 같으면 확인 해보고 지우자
-                Glide.with(context).load(R.drawable.album_art1).into(setCover)
-            }
+
+            Glide.with(context).load(myListTrack[position].artUri)
+                .apply(RequestOptions().placeholder((R.drawable.album_art1)).fitCenter())
+                .into(setCover)
 
             if (mediaPlayer == null)
                 mediaPlayer = MediaPlayer()

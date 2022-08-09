@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:scaleType="center"
+        android:scaleType="fitCenter"
         android:src="@drawable/album_art1" />
 
     <SeekBar
@@ -139,7 +139,7 @@
                 android:layout_width="50sp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/icon_pause"/>
+                android:src="@drawable/icon_playing"/>
             <ImageView
                 android:id="@+id/next_icon"
                 android:layout_width="50sp"
@@ -151,7 +151,7 @@
                 android:layout_width="50sp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/icon_shuffle_on"/>
+                android:src="@drawable/icon_shuffle_off"/>
 
         </LinearLayout>
 

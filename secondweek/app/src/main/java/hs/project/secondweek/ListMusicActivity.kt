@@ -1,16 +1,21 @@
 package hs.project.secondweek
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyCallback
+import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -29,21 +34,20 @@ class ListMusicActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityListmusicBinding.inflate(layoutInflater) }
 
-    var adapter: MusicListAdapter? = null
-
-
-
     private lateinit var recyclerView: RecyclerView
     private lateinit var dieAdapter: MusicListAdapter
 
     companion object {
         const val TAG: String = "MYLOG"
 
-        lateinit var dataArray: ArrayList<MusicInfoData>
         var Title: TextView? = null
         var Artist: TextView? = null
         var Play: ImageView? = null
         var Cover: ImageView? = null
+
+        var ongoingCall = false
+        var phoneStateListener: PhoneStateListener? = null
+        var telephonyManager: TelephonyManager? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,44 +68,35 @@ class ListMusicActivity : AppCompatActivity() {
                 playMusic()
         }
 
-
         binding.musicPlayerSection.setOnClickListener {
             Log.d("MYLOG", "ListMusicActivity -> 하단 음악 바 클릭")
             if (mediaPlayer != null) {
                 val intent = Intent(this, PlayerMusicActivity::class.java)
                 startActivity(intent)
             } else {
-                Log.d("MYLOG", "ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ")
+                MainActivity
             }
 
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        Log.d(PlayerMusicActivity.TAG, "!!!!!!!!재진입")
-        super.onNewIntent(intent)
-    }
-
-    private fun callStateListener() {}
-
-    private fun alarmStateListener() {    }
-
     override fun onStart() {
         Log.d(TAG, "ListMusicActivity - onStart() 호출")
         super.onStart()
         initializeData()
-        initializeMusicBar()
-        initializeLayout()
     }
 
     override fun onResume() {
         Log.d(TAG, "ListMusicActivity - onResume() 호출")
         super.onResume()
+        initializeMusicBar()
+        initializeLayout()
     }
 
     override fun onPause() {
         Log.d(TAG, "ListMusicActivity - onPause() 호출")
         super.onPause()
+        callStateListener()
     }
 
     override fun onStop() {
@@ -112,6 +107,7 @@ class ListMusicActivity : AppCompatActivity() {
     override fun onRestart() {
         Log.d(TAG, "ListMusicActivity - onRestart() 호출")
         super.onRestart()
+        callStateListener()
     }
 
     override fun onDestroy() {
@@ -121,8 +117,7 @@ class ListMusicActivity : AppCompatActivity() {
 
     private fun initializeData() {
         Log.d(TAG, "ListMusicActivity - 데이터 초기화")
-        dataArray = getMusic()
-
+        myListTrack = getMusic()
     }
 
     private fun initializeLayout() {
@@ -133,7 +128,7 @@ class ListMusicActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
 
-        dieAdapter = MusicListAdapter(this, dataArray)
+        dieAdapter = MusicListAdapter(this, myListTrack)
         recyclerView.adapter = dieAdapter
 
     }
@@ -148,8 +143,11 @@ class ListMusicActivity : AppCompatActivity() {
 
         if (mediaPlayer == null)
             Play?.setImageResource(R.drawable.icon_playing)
-        else {
+        else if (mediaPlayer!!.isPlaying) {
             Play?.setImageResource(R.drawable.icon_pause)
+        }
+        else{
+            Play?.setImageResource(R.drawable.icon_playing)
 
             /**
              * 액티비티가 생성되고 나서 딱 한 번만 가능한데, 사용자가 버튼을 누를 때마다 업데이트가 되도록 어떻게 할 수 있을까?
@@ -161,7 +159,7 @@ class ListMusicActivity : AppCompatActivity() {
             else {
                 Glide.with(this).load(myListTrack[musicPosition].artUri).apply(
                     RequestOptions()
-                        .placeholder(R.drawable.album_art1).centerCrop())
+                        .placeholder(R.drawable.album_art1).fitCenter())
                     .into(binding.musicList)
             }
         }
@@ -228,6 +226,59 @@ class ListMusicActivity : AppCompatActivity() {
     private fun playMusic() {
         Play?.setImageResource(R.drawable.icon_pause)
         mediaPlayer!!.start()
+    }
+
+    private fun callStateListener() {
+        telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            telephonyManager?.registerTelephonyCallback(
+                mainExecutor,
+                object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+                    override fun onCallStateChanged(state: Int) {
+                        when (state) {
+                            TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING ->
+                                if (mediaPlayer!!.isPlaying) {
+                                    ongoingCall = true
+                                    pauseMusic()
+                                }
+                            TelephonyManager.CALL_STATE_IDLE ->
+                                if (mediaPlayer != null) {
+                                    if (ongoingCall) {
+                                        ongoingCall = false
+                                        playMusic()
+                                    }
+                                }
+                        }
+                    }
+
+                }
+            )
+        }
+        else {
+            phoneStateListener = object : PhoneStateListener() {
+                override fun onCallStateChanged(state: Int, incomingNumber: String) {
+
+                    when (state) {
+                        TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING ->
+                            if (mediaPlayer!!.isPlaying) {
+                                ongoingCall = true
+                                pauseMusic()
+                            }
+                        TelephonyManager.CALL_STATE_IDLE ->
+                            if (mediaPlayer != null) {
+                                if (ongoingCall) {
+                                    ongoingCall = false
+                                    playMusic()
+                                }
+                            }
+                    }
+
+                }
+            }
+
+            telephonyManager!!.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
+        }
     }
 
     override fun onBackPressed() {

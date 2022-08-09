@@ -16,6 +16,7 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.media.app.NotificationCompat
 import hs.project.secondweek.Adapter.musicPosition
+import hs.project.secondweek.Adapter.myListTrack
 import hs.project.secondweek.ApplicationClass
 import hs.project.secondweek.PlayerMusicActivity
 import hs.project.secondweek.R
@@ -64,8 +65,8 @@ class MusicService: Service() {
         val notification = androidx.core.app.NotificationCompat.Builder(baseContext,
             ApplicationClass.CHANNEL_ID
         )
-            .setContentTitle(PlayerMusicActivity.musicList[musicPosition].title)
-            .setContentText(PlayerMusicActivity.musicList[musicPosition].artist)
+            .setContentTitle(myListTrack[musicPosition].title)
+            .setContentText(myListTrack[musicPosition].artist)
             .setSmallIcon(R.drawable.icon_music_list)
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.album_art1))
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSession.sessionToken))
