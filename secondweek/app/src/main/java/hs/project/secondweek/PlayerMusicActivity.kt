@@ -10,11 +10,14 @@ import android.os.Handler
 import android.os.IBinder
 import android.text.TextUtils
 import android.util.Log
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.SeekBar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import eightbitlab.com.blurview.RenderScriptBlur
 import hs.project.secondweek.Adapter.*
+import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.Service.MusicService
 import hs.project.secondweek.databinding.ActivityPlayermusicBinding
 
@@ -24,13 +27,16 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
     private val binding by lazy { ActivityPlayermusicBinding.inflate(layoutInflater) }
 
-    var isShuffle: Boolean = false
-
     companion object {
         const val TAG: String = "MYLOG"
 
         var seekbar: SeekBar? = null
         var playBtn: ImageView? = null
+
+        var isRepeat: Boolean = false
+        var isShuffle: Boolean = false
+        var tempTrack: ArrayList<MusicInfoData> = myListTrack
+        var tempPosition: Int = 0
 
         var musicService: MusicService? = null
     }
@@ -40,30 +46,26 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        blurBackground()
+
         seekbar = binding.musicBar
         playBtn = binding.controlIcon
         totalTime = mediaPlayer!!.duration
-
-        binding.musicBar.max = mediaPlayer!!.duration
-        binding.musicBar.setOnSeekBarChangeListener(
-            object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    if (fromUser)
-                        mediaPlayer!!.seekTo(progress)
-                }
-                override fun onStartTrackingTouch(seekBar: SeekBar?) { }
-                override fun onStopTrackingTouch(seekBar: SeekBar?) { }
-            }
-        )
 
         binding.controlIcon.setOnClickListener { controlMusic() }
 
         binding.previousIcon.setOnClickListener { moveMusic(increment = false) }
         binding.nextIcon.setOnClickListener { moveMusic(increment = true) }
 
-        binding.repeatIcon.setOnClickListener {        }
+        binding.repeatIcon.setOnClickListener {
+            if(isRepeat) offRepeat()
+            else onRepeat()
+        }
 
-        binding.shuffleIcon.setOnClickListener {        }
+        binding.shuffleIcon.setOnClickListener {
+            if (isShuffle) offShuffle()
+            else onShuffle()
+        }
 
         binding.musicList.setOnClickListener {
             val intent = Intent(this, ListMusicActivity::class.java)
@@ -113,16 +115,53 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
     private fun initializeLayout() {
         Log.d(TAG, "PlayerMusicActivity - 레이아웃 초기화")
+
+        binding.musicBar.max = mediaPlayer!!.duration
+        binding.musicBar.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    if (fromUser)
+                        mediaPlayer!!.seekTo(progress)
+                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) { }
+                override fun onStopTrackingTouch(seekBar: SeekBar?) { }
+            }
+        )
+
         binding.musicTitle.isSingleLine = true
         binding.musicTitle.isSelected = true
         binding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
 
         binding.musicTitle.text = changeTextTitle
         binding.musicSinger.text = changeTextArtist
+
+        setCover()
+    }
+
+    private fun blurBackground() {
+        val radius = 22f
+        val decorView = window.decorView
+        val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
+        val windowBackground = decorView.background
+
+        binding.blurView.setupWith(rootView)
+            .setFrameClearDrawable(windowBackground)
+            .setBlurAlgorithm(RenderScriptBlur(this))
+            .setBlurRadius(radius)
+            .setBlurAutoUpdate(true)
+            .setHasFixedTransformationMatrix(true)
+    }
+
+    private fun setCover() {
         Glide.with(this).load(myListTrack[musicPosition].artUri).apply(
             RequestOptions()
-                .placeholder(R.drawable.album_art1).fitCenter())
+                .placeholder(R.drawable.album_art).fitCenter())
             .into(binding.albumArt)
+
+        Glide.with(this).load(myListTrack[musicPosition].artUri).apply(
+            RequestOptions()
+                .placeholder(R.drawable.album_art).centerCrop())
+            .into(binding.blurAlbumArt)
     }
 
     private fun initializeSeekBar() {
@@ -137,7 +176,7 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
                 try {
                     seekBar.progress = mediaPlayer!!.currentPosition
                     handler.postDelayed(this, 1000)
-
+                    controlRepeat()
                     settingMusicTime()
                 } catch (e: Exception) {
                     seekBar.progress = 0
@@ -188,17 +227,43 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         }
     }
 
+    private fun onRepeat() {
+        Log.d(TAG, "PlayerMusicActivity - 한 곡 반복")
+        binding.repeatIcon.setImageResource(R.drawable.icon_repeat_one_music)
+        isRepeat = true
+    }
+
+    private fun offRepeat() {
+        Log.d(TAG, "PlayerMusicActivity - 전곡 반복")
+        binding.repeatIcon.setImageResource(R.drawable.icon_repeat_list_once)
+        isRepeat = false
+    }
+
+    private fun controlRepeat() {
+        if (seekbar?.progress == mediaPlayer!!.duration) {
+            if (isRepeat) {
+                mediaPlayer!!.start()
+            }
+            else
+                moveMusic(true)
+        }
+    }
+
     private fun onShuffle() {
         Log.d(TAG, "PlayerMusicActivity - 셔플 ON")
         binding.shuffleIcon.setImageResource(R.drawable.icon_shuffle_on)
         isShuffle = true
+        tempTrack = myListTrack
+        tempPosition = musicPosition
         myListTrack.shuffle()
     }
+
     private fun offShuffle() {
         Log.d(TAG, "PlayerMusicActivity - 셔플 OFF")
         binding.shuffleIcon.setImageResource(R.drawable.icon_shuffle_off)
         isShuffle = false
-        initializeData()
+        myListTrack = tempTrack
+        musicPosition = tempPosition
     }
 
     private fun moveMusic(increment: Boolean) {
@@ -281,27 +346,6 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         val intent = Intent(this, MusicService::class.java)
         bindService(intent, this, BIND_AUTO_CREATE)
         //startService(intent)
-    }
-
-    private fun initializeData() {
-        musicPosition = intent.getIntExtra("index", 0)
-        Log.d(TAG, "PlayerMusicActivity - 데이터 초기화")
-        myListTrack = ArrayList()
-        myListTrack.addAll(myListTrack)
-    }
-
-    private fun TEMPinitializeLayout(shuffle: Boolean) {
-        Log.d(TAG, "PlayerMusicActivity - 레이아웃 초기화")
-        Glide.with(this).load(myListTrack[musicPosition].artUri).apply(
-            RequestOptions()
-                .placeholder(R.drawable.album_art1).fitCenter())
-            .into(binding.albumArt)
-
-        binding.musicTitle.text = myListTrack[musicPosition].title
-        binding.musicSinger.text = myListTrack[musicPosition].artist
-
-        if (shuffle) binding.shuffleIcon.setImageResource(R.drawable.icon_shuffle_on)
-        else binding.shuffleIcon.setImageResource(R.drawable.icon_shuffle_off)
     }
 
     private fun releaseMusicPlayer() {

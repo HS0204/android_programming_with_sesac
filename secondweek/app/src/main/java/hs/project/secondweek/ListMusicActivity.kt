@@ -15,7 +15,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -159,7 +158,7 @@ class ListMusicActivity : AppCompatActivity() {
             else {
                 Glide.with(this).load(myListTrack[musicPosition].artUri).apply(
                     RequestOptions()
-                        .placeholder(R.drawable.album_art1).fitCenter())
+                        .placeholder(R.drawable.album_art).fitCenter())
                     .into(binding.musicList)
             }
         }

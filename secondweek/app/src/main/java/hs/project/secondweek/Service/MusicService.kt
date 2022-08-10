@@ -1,20 +1,13 @@
 package hs.project.secondweek.Service
 
-import android.app.Application
-import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import android.widget.ImageView
-import androidx.media.app.NotificationCompat
 import hs.project.secondweek.Adapter.musicPosition
 import hs.project.secondweek.Adapter.myListTrack
 import hs.project.secondweek.ApplicationClass
@@ -68,7 +61,7 @@ class MusicService: Service() {
             .setContentTitle(myListTrack[musicPosition].title)
             .setContentText(myListTrack[musicPosition].artist)
             .setSmallIcon(R.drawable.icon_music_list)
-            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.album_art1))
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.album_art))
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSession.sessionToken))
             .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
             .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)

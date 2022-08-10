@@ -5,7 +5,6 @@ import android.media.MediaPlayer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -72,7 +71,7 @@ class MusicListAdapter(
             songTime.text = formatDuration(myListTrack[position].duration)
 
             Glide.with(context).load(myListTrack[position].artUri)
-                .apply(RequestOptions().placeholder((R.drawable.album_art1)).fitCenter())
+                .apply(RequestOptions().placeholder((R.drawable.album_art)).fitCenter())
                 .into(setCover)
 
             if (mediaPlayer == null)

@@ -15,7 +15,7 @@
             android:id="@+id/music_list_img"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/album_art1"
+            android:src="@drawable/album_art"
             android:scaleType="fitCenter"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
