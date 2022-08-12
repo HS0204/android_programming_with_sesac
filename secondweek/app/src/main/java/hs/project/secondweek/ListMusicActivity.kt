@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.telephony.PhoneStateListener
@@ -15,6 +14,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -89,7 +89,7 @@ class ListMusicActivity : AppCompatActivity() {
         Log.d(TAG, "ListMusicActivity - onResume() 호출")
         super.onResume()
         initializeMusicBar()
-        initializeLayout()
+        initializeLayout() // !!!!!어댑터O -> 변경할 것
     }
 
     override fun onPause() {

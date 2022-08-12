@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
@@ -13,6 +12,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import eightbitlab.com.blurview.RenderScriptBlur
@@ -83,7 +83,7 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "PlayerMusicActivity - onResume() 호출")
-        initializeLayout()
+        initializeLayout() // 어댑터X
         initializeSeekBar()
 
         if (mediaPlayer!!.isPlaying)
