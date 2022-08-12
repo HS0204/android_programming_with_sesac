@@ -6,9 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import hs.project.secondweek.Adapter.Music4uAdapter
+import hs.project.secondweek.Data.Music4uData
 import hs.project.secondweek.R
+import hs.project.secondweek.databinding.FragmentMusic4uBinding
 
 class Music4UFragment: Fragment() {
+
+    private lateinit var binding: FragmentMusic4uBinding
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: Music4uAdapter
+    private lateinit var dataArray: ArrayList<Music4uData>
+
+    lateinit var albumImg: Array<Int>
+    lateinit var title: Array<String>
+    lateinit var singers: Array<String>
 
     companion object {
         const val TAG: String = "MYLOG"
@@ -27,16 +42,57 @@ class Music4UFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // 뷰 inflate
+    ): View {
         Log.d(TAG, "Music4UFragment - onCreateView() 호출")
-        return inflater.inflate(R.layout.fragment_music4u, container, false)
+        binding = FragmentMusic4uBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // 프래그먼트 뷰 초기값 설정 -> RecyclerView 어댑터 등
         Log.d(TAG, "Music4UFragment - onViewCreated() 호출")
         super.onViewCreated(view, savedInstanceState)
+
+        initializeData()
+        setAdapter()
+    }
+
+    private fun initializeData() {
+        Log.d(TAG, "Music4UFragment - 데이터 초기화")
+
+        dataArray = arrayListOf<Music4uData>()
+
+        albumImg = arrayOf(
+            R.drawable.music4u_1, R.drawable.music4u_2, R.drawable.music4u_3, R.drawable.music4u_4,
+            R.drawable.music4u_5, R.drawable.music4u_6, R.drawable.music4u_7, R.drawable.music4u_8
+        )
+
+        title = arrayOf(
+            "즐겨들은 'L.O.V.E (feat. EAR...' 분위기의 곡", "내 취향 최신 곡", "국내 팝 취향의 추천 음악", "작년 오늘 들었던 노래",
+            "꼰대가 선정한 텐션업 여름리스트", "국내 팝에서 요즘 핫한 곡", "아이돌이 부르는 딥하우스", "Red Velvet(레드벨벳)의 인기곡"
+        )
+
+        singers = arrayOf(
+            "Young Bae, John K, Singala", "Weeekly, Ordinary Surfers, Just Kevin", "EXO, 윤하, Billlie", "SHINee, 페이퍼컷 프로젝트, Lucia",
+            "김건모, 언타이틀, 이정", "로꼬, 화사, 이무진", "f, SHINee, 루나", "Red Velvet"
+        )
+
+        for (i in albumImg.indices) {
+            val data =
+                Music4uData(albumImg[i], title[i], singers[i])
+            dataArray.add(data)
+        }
+    }
+
+    private fun setAdapter() {
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
+        recyclerView = binding.music4uSection
+        recyclerView.layoutManager = layoutManager
+        recyclerView.setHasFixedSize(true)
+
+        adapter = Music4uAdapter(requireContext(), dataArray)
+        recyclerView.adapter = adapter
     }
 
     override fun onResume() {
