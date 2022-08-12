@@ -21,7 +21,7 @@ class Music4UFragment: Fragment() {
     private lateinit var adapter: Music4uAdapter
     private lateinit var dataArray: ArrayList<Music4uData>
 
-    lateinit var albumImg: Array<Int>
+    private lateinit var albumImg: Array<Int>
     lateinit var title: Array<String>
     lateinit var singers: Array<String>
 
