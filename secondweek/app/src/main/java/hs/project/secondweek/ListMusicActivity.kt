@@ -8,11 +8,10 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import hs.project.secondweek.Adapter.MusicListAdapter
 import hs.project.secondweek.Service.MusicService
 import hs.project.secondweek.databinding.ActivityListmusicBinding
@@ -26,7 +25,7 @@ class ListMusicActivity : AppCompatActivity() {
     private val binding by lazy { ActivityListmusicBinding.inflate(layoutInflater) }
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var dieAdapter: MusicListAdapter
+    // private lateinit var dieAdapter: MusicListAdapter
 
     companion object {
         const val TAG: String = "MYLOG"
@@ -46,6 +45,8 @@ class ListMusicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        setAdapter()
+
         Title = binding.musicTitle
         Artist = binding.musicSinger
         Play = binding.musicControl
@@ -60,14 +61,23 @@ class ListMusicActivity : AppCompatActivity() {
         }
 
         binding.musicPlayerSection.setOnClickListener {
-            Log.d("MYLOG", "ListMusicActivity -> 하단 음악 바 클릭")
+            Log.d(TAG, "ListMusicActivity -> 하단 음악 바 클릭")
             if (mediaPlayer != null) {
                 val intent = Intent(this, PlayerMusicActivity::class.java)
                 startActivity(intent)
             } else {
                 MainActivity
             }
+        }
 
+        binding.musicList.setOnClickListener {
+            if (customMusicList.size > 0) {
+                val intent = Intent(this, CustomListMusicActivity::class.java)
+                startActivity(intent)
+            }
+            else {
+                Toast.makeText(this, "먼저 음악을 추가해주세요", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -79,8 +89,7 @@ class ListMusicActivity : AppCompatActivity() {
     override fun onResume() {
         Log.d(TAG, "ListMusicActivity - onResume() 호출")
         super.onResume()
-        initializeMusicBar()
-        initializeLayout() // !!!!!어댑터O -> 변경할 것
+        initializeMiniPlayer()
     }
 
     override fun onPause() {
@@ -103,21 +112,21 @@ class ListMusicActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun initializeLayout() {
-        Log.d(TAG, "ListMusicActivity - 레이아웃 초기화")
+    private fun setAdapter() {
+        Log.d(TAG, "ListMusicActivity - RecyclerView 어댑터 세팅")
 
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView = binding.musicListSection
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
 
-        dieAdapter = MusicListAdapter(this, localMusicList)
-        recyclerView.adapter = dieAdapter
+        musicListAdapter = MusicListAdapter(this, localMusicList, false)
+        recyclerView.adapter = musicListAdapter
 
     }
 
-    private fun initializeMusicBar() {
-        Log.d(TAG, "ListMusicActivity - 뮤직 재생 하단 바 초기화")
+    private fun initializeMiniPlayer() {
+        Log.d(TAG, "ListMusicActivity - 미니 플레이어 초기화")
         Title?.text = changeTextTitle
         Artist?.text = changeTextArtist
         Title?.isSingleLine = true
@@ -128,23 +137,6 @@ class ListMusicActivity : AppCompatActivity() {
             Play?.setImageResource(R.drawable.icon_playing)
         else if (mediaPlayer!!.isPlaying) {
             Play?.setImageResource(R.drawable.icon_pause)
-        }
-        else{
-            Play?.setImageResource(R.drawable.icon_playing)
-
-            /**
-             * 액티비티가 생성되고 나서 딱 한 번만 가능한데, 사용자가 버튼을 누를 때마다 업데이트가 되도록 어떻게 할 수 있을까?
-             * 커서를 이용해볼까?
-             * **/
-            if (!mediaPlayer!!.isPlaying) {
-                binding.musicList.setImageResource(R.drawable.icon_music_list)
-            }
-            else {
-                Glide.with(this).load(localMusicList[musicPosition].artUri).apply(
-                    RequestOptions()
-                        .placeholder(R.drawable.album_art).fitCenter())
-                    .into(binding.musicList)
-            }
         }
 
     }

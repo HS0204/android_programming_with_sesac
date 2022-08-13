@@ -36,9 +36,11 @@ var changeTextTitle = "곡 제목"
 var changeTextArtist = "가수"
 lateinit var changeCover: ByteArray
 
-var localMusicAdapter: MusicListAdapter? = null
-var localMusicList = ArrayList<MusicInfoData>()
+lateinit var musicListAdapter: MusicListAdapter
 var songe: MusicInfoData? = null
+
+var localMusicList = ArrayList<MusicInfoData>()
+var customMusicList = ArrayList<MusicInfoData>()
 
 var currentSongIndex = 0
 var musicPosition = 0
@@ -109,7 +111,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
 
         binding.musicList.setOnClickListener {
-            val intent = Intent(this, ListMusicActivity::class.java)
+            val intent = Intent(this, CustomListMusicActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)
             overridePendingTransition(0, 0)

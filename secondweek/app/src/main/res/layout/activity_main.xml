@@ -38,9 +38,11 @@
 
         <TextView
             android:id="@+id/music_singer"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text="@string/music_singer"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

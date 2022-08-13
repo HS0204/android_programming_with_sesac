@@ -17,7 +17,8 @@ import hs.project.secondweek.databinding.LayoutMusicListBinding
 
 class MusicListAdapter(
     private val context: Context,
-    private val dataList: ArrayList<MusicInfoData>
+    private val dataList: ArrayList<MusicInfoData>,
+    private val custom: Boolean
 ) : RecyclerView.Adapter<MusicListAdapter.MusicListViewHolder>() {
 
     init {
@@ -45,6 +46,7 @@ class MusicListAdapter(
     inner class MusicListViewHolder(binding: LayoutMusicListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val root = binding.root
+        private val option = binding.musicListOption
 
         private val setCover: ImageView = binding.musicListImg
         private val songTitle: TextView = binding.musicListTitle
@@ -64,28 +66,54 @@ class MusicListAdapter(
                 mediaPlayer = MediaPlayer()
 
             root.setOnClickListener {
-                Log.d("MYLOG", "MyTrackAdapter -> 뮤직 리스트에서 음악 재생")
-                Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${localMusicList[position].title}")
+                if (custom) {
+                    Log.d("MYLOG", "MyTrackAdapter -> 뮤직 리스트에서 음악 재생")
+                    Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${localMusicList[position].title}")
 
-                musicPosition = position
+                    musicPosition = position
 
-                mediaPlayer!!.reset()
-                mediaPlayer!!.setDataSource(localMusicList[position].path)
-                mediaPlayer!!.prepare()
-                mediaPlayer!!.start()
+                    mediaPlayer!!.reset()
+                    mediaPlayer!!.setDataSource(localMusicList[position].path)
+                    mediaPlayer!!.prepare()
+                    mediaPlayer!!.start()
 
-                changeTextTitle = songTitle.text.toString()
-                changeTextArtist = songArtist.text.toString()
+                    changeTextTitle = songTitle.text.toString()
+                    changeTextArtist = songArtist.text.toString()
 
-                MainActivity.TitleN?.text = changeTextTitle
-                MainActivity.ArtistN?.text = changeTextArtist
-                MainActivity.PlayN?.setImageResource(R.drawable.icon_pause)
+                    MainActivity.TitleN?.text = changeTextTitle
+                    MainActivity.ArtistN?.text = changeTextArtist
+                    MainActivity.PlayN?.setImageResource(R.drawable.icon_pause)
 
-                ListMusicActivity.Title?.text = changeTextTitle
-                ListMusicActivity.Artist?.text = changeTextArtist
-                ListMusicActivity.Play?.setImageResource(R.drawable.icon_pause)
+                    ListMusicActivity.Title?.text = changeTextTitle
+                    ListMusicActivity.Artist?.text = changeTextArtist
+                    ListMusicActivity.Play?.setImageResource(R.drawable.icon_pause)
 
-                songe = songInfo
+                    CustomListMusicActivity.titleCustom?.text = changeTextTitle
+                    CustomListMusicActivity.artistCustom?.text = changeTextArtist
+                    CustomListMusicActivity.playBtnCustom?.setImageResource(R.drawable.icon_pause)
+
+                    songe = songInfo
+                }
+                else {
+                    Log.d("MYLOG", "${localMusicList[position].title}을 customMusicList에 추가")
+
+                    val music = MusicInfoData(
+                        id = localMusicList[position].id,
+                        title = localMusicList[position].title,
+                        album = localMusicList[position].album,
+                        artist = localMusicList[position].artist,
+                        path = localMusicList[position].path,
+                        duration = localMusicList[position].duration,
+                        artUri = localMusicList[position].artUri
+                    )
+
+                    customMusicList.add(music)
+                }
+
+            }
+
+            option.setOnClickListener {
+
             }
 
         }
