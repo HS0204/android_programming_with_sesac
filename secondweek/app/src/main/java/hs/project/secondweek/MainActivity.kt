@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         PlayN?.setOnClickListener {
             Log.d(TAG, "MainActivity -> 음악 컨트롤 버튼 클릭")
             if (mediaPlayer == null) {
-                Toast.makeText(this, "리스트 버튼을 클릭해 음악을 선택해주세요", Toast.LENGTH_SHORT).show().toString()
+                Toast.makeText(this, "내 음악 -> 로컬 음악에서 리스트를 채워주세요", Toast.LENGTH_SHORT).show().toString()
             } else if (mediaPlayer!!.isPlaying)
                 pauseMusic()
             else if (mediaPlayer != null)
@@ -101,11 +101,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         binding.musicPlayerSection.setOnClickListener {
             Log.d("MYLOG", "MainActivity -> 하단 음악 바를 클릭")
-            if (localMusicList.size != 0) {
+            if (customMusicList.size != 0) {
                 val intent = Intent(this, PlayerMusicActivity::class.java)
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "리스트 버튼을 클릭하여 음악을 선택해주세요", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "내 음악 -> 로컬 음악에서 리스트를 채워주세요", Toast.LENGTH_SHORT).show()
                     .toString()
             }
         }
@@ -259,8 +259,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         binding.musicSinger.isSingleLine = true
         binding.musicSinger.isSelected = true
         binding.musicSinger.ellipsize = TextUtils.TruncateAt.MARQUEE
-
-
     }
 
     private fun pauseMusic() {
@@ -326,6 +324,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
             ListMusicActivity.telephonyManager!!.listen(ListMusicActivity.phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
         }
+    }
+
+    fun replaceFragment(fragment: Fragment) {
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.replace(binding.viewSection.id, fragment).commit()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

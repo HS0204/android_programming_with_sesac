@@ -6,13 +6,13 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import hs.project.secondweek.Adapter.MusicListAdapter
-import hs.project.secondweek.ListMusicActivity.Companion.Play
 import hs.project.secondweek.databinding.ActivityCustomListMusicBinding
 
 class CustomListMusicActivity : AppCompatActivity() {
@@ -39,7 +39,7 @@ class CustomListMusicActivity : AppCompatActivity() {
 
         titleCustom = binding.musicTitle
         artistCustom = binding.musicSinger
-        Play = binding.musicControl
+        playBtnCustom = binding.musicControl
         coverCustom = binding.musicList
 
         playBtnCustom?.setOnClickListener {
@@ -52,11 +52,12 @@ class CustomListMusicActivity : AppCompatActivity() {
 
         binding.musicPlayerSection.setOnClickListener {
             Log.d("MYLOG", "CustomListMusicActivity -> 하단 음악 바 클릭")
-            if (mediaPlayer != null) {
+            if (customMusicList.size != 0) {
                 val intent = Intent(this, PlayerMusicActivity::class.java)
                 startActivity(intent)
             } else {
-                MainActivity
+                Toast.makeText(this, "내 음악 -> 로컬 음악에서 리스트를 채워주세요", Toast.LENGTH_SHORT).show()
+                    .toString()
             }
 
         }

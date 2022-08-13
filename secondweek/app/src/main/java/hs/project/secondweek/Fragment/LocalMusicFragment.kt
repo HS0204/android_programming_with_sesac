@@ -1,25 +1,22 @@
 package hs.project.secondweek.Fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import hs.project.secondweek.ListMusicActivity
-import hs.project.secondweek.databinding.FragmentMymusicBinding
-import hs.project.secondweek.localMusicList
+import hs.project.secondweek.databinding.FragmentLocalMusicBinding
 
-class MyMusicFragment: Fragment() {
+class LocalMusicFragment: Fragment() {
 
-    private lateinit var binding: FragmentMymusicBinding
+    private lateinit var binding: FragmentLocalMusicBinding
 
     companion object {
         const val TAG: String = "MYLOG"
 
-        fun newInstance(): MyMusicFragment {
-            return MyMusicFragment()
+        fun newInstance(): LocalMusicFragment {
+            return LocalMusicFragment()
         }
     }
 
@@ -34,7 +31,7 @@ class MyMusicFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         Log.d(TAG, "MyMusicFragment - onCreateView() 호출")
-        binding = FragmentMymusicBinding.inflate(inflater, container, false)
+        binding = FragmentLocalMusicBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -43,15 +40,6 @@ class MyMusicFragment: Fragment() {
         Log.d(TAG, "MyMusicFragment - onViewCreated() 호출")
         super.onViewCreated(view, savedInstanceState)
 
-        binding.localCount.text = "${localMusicList.size}곡"
-
-        binding.localSection.setOnClickListener {
-            val intent = Intent(activity, ListMusicActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            startActivity(intent)
-            // !!!!!!!!음악 액티비티 팝업 애니메이션 필요
-        }
-
     }
 
     override fun onResume() {
@@ -59,10 +47,6 @@ class MyMusicFragment: Fragment() {
         Log.d(TAG, "MyMusicFragment - onResume() 호출")
         super.onResume()
 
-        /*
-        binding.localSection.setOnClickListener {
-           MainActivity().replaceFragment(LocalMusicFragment.newInstance())
-        }*/
     }
 
     override fun onPause() {

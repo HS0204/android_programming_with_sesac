@@ -67,7 +67,6 @@ class MusicListAdapter(
 
             root.setOnClickListener {
                 if (custom) {
-                    Log.d("MYLOG", "MyTrackAdapter -> 뮤직 리스트에서 음악 재생")
                     Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${localMusicList[position].title}")
 
                     musicPosition = position
@@ -109,10 +108,6 @@ class MusicListAdapter(
 
                     customMusicList.add(music)
                 }
-
-            }
-
-            option.setOnClickListener {
 
             }
 
