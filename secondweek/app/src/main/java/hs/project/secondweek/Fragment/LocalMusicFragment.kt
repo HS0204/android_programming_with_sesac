@@ -5,12 +5,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import hs.project.secondweek.Adapter.MusicListAdapter
 import hs.project.secondweek.databinding.FragmentLocalMusicBinding
+import hs.project.secondweek.localMusicList
+import hs.project.secondweek.musicListAdapter
 
 class LocalMusicFragment: Fragment() {
 
     private lateinit var binding: FragmentLocalMusicBinding
+
+    private lateinit var recyclerView: RecyclerView
+
+    var titleLocal: TextView? = null
+    var artistLocal: TextView? = null
+    var playBtnLocal: ImageView? = null
+    var coverLocal: ImageView? = null
 
     companion object {
         const val TAG: String = "MYLOG"
@@ -39,6 +53,21 @@ class LocalMusicFragment: Fragment() {
         // 프래그먼트 뷰 초기값 설정 -> RecyclerView 어댑터 등
         Log.d(TAG, "MyMusicFragment - onViewCreated() 호출")
         super.onViewCreated(view, savedInstanceState)
+
+        setAdapter()
+
+    }
+
+    private fun setAdapter() {
+        Log.d(TAG, "MyMusicFragment - RecyclerView 어댑터 세팅")
+
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerView = binding.musicListSection
+        recyclerView.layoutManager = layoutManager
+        recyclerView.setHasFixedSize(true)
+
+        musicListAdapter = MusicListAdapter(requireContext(), localMusicList, false)
+        recyclerView.adapter = musicListAdapter
 
     }
 

@@ -1,19 +1,20 @@
 package hs.project.secondweek.Fragment
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import hs.project.secondweek.ListMusicActivity
+import hs.project.secondweek.Owner
 import hs.project.secondweek.databinding.FragmentMymusicBinding
 import hs.project.secondweek.localMusicList
 
 class MyMusicFragment: Fragment() {
 
     private lateinit var binding: FragmentMymusicBinding
+    lateinit var owner:Owner
 
     companion object {
         const val TAG: String = "MYLOG"
@@ -26,6 +27,12 @@ class MyMusicFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "MyMusicFragment - onCreate() 호출")
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        owner = context as Owner
     }
 
     override fun onCreateView(
@@ -45,10 +52,9 @@ class MyMusicFragment: Fragment() {
 
         binding.localCount.text = "${localMusicList.size}곡"
 
+
         binding.localSection.setOnClickListener {
-            val intent = Intent(activity, ListMusicActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            startActivity(intent)
+            owner.replaceFragment(LocalMusicFragment.newInstance())
             // !!!!!!!!음악 액티비티 팝업 애니메이션 필요
         }
 
@@ -59,10 +65,6 @@ class MyMusicFragment: Fragment() {
         Log.d(TAG, "MyMusicFragment - onResume() 호출")
         super.onResume()
 
-        /*
-        binding.localSection.setOnClickListener {
-           MainActivity().replaceFragment(LocalMusicFragment.newInstance())
-        }*/
     }
 
     override fun onPause() {

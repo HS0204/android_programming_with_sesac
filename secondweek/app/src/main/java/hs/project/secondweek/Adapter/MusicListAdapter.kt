@@ -83,10 +83,6 @@ class MusicListAdapter(
                     MainActivity.ArtistN?.text = changeTextArtist
                     MainActivity.PlayN?.setImageResource(R.drawable.icon_pause)
 
-                    ListMusicActivity.Title?.text = changeTextTitle
-                    ListMusicActivity.Artist?.text = changeTextArtist
-                    ListMusicActivity.Play?.setImageResource(R.drawable.icon_pause)
-
                     CustomListMusicActivity.titleCustom?.text = changeTextTitle
                     CustomListMusicActivity.artistCustom?.text = changeTextArtist
                     CustomListMusicActivity.playBtnCustom?.setImageResource(R.drawable.icon_pause)

@@ -272,13 +272,11 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     private fun setPauseIcon() {
         playBtn?.setImageResource(R.drawable.icon_playing)
         MainActivity.PlayN?.setImageResource(R.drawable.icon_playing)
-        ListMusicActivity.Play?.setImageResource(R.drawable.icon_playing)
     }
 
     private fun setPlayingIcon() {
         playBtn?.setImageResource(R.drawable.icon_pause)
         MainActivity.PlayN?.setImageResource(R.drawable.icon_pause)
-        ListMusicActivity.Play?.setImageResource(R.drawable.icon_pause)
     }
 
     private fun setMusicPosition(increment: Boolean) {

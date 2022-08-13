@@ -46,7 +46,7 @@ var currentSongIndex = 0
 var musicPosition = 0
 
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, Owner {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
@@ -55,6 +55,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private lateinit var myMusicFragment: MyMusicFragment
     private lateinit var searchingFragment: SearchingFragment
     private lateinit var alwaysFragment: AlwaysFragment
+
+    var ongoingCall = false
+    var phoneStateListener: PhoneStateListener? = null
+    var telephonyManager: TelephonyManager? = null
 
     val PERMISSION_CODE = 100
 
@@ -272,24 +276,24 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     private fun callStateListener() {
-        ListMusicActivity.telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
+        telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            Log.d(ListMusicActivity.TAG,"callStateListener 버전 이상 동작")
-            ListMusicActivity.telephonyManager?.registerTelephonyCallback(
+            Log.d(TAG,"callStateListener 버전 이상 동작")
+            telephonyManager?.registerTelephonyCallback(
                 mainExecutor,
                 object : TelephonyCallback(), TelephonyCallback.CallStateListener {
                     override fun onCallStateChanged(state: Int) {
                         when (state) {
                             TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING ->
                                 if (mediaPlayer!!.isPlaying) {
-                                    ListMusicActivity.ongoingCall = true
+                                    ongoingCall = true
                                     pauseMusic()
                                 }
                             TelephonyManager.CALL_STATE_IDLE ->
                                 if (mediaPlayer != null) {
-                                    if (ListMusicActivity.ongoingCall) {
-                                        ListMusicActivity.ongoingCall = false
+                                    if (ongoingCall) {
+                                        ongoingCall = false
                                         playMusic()
                                     }
                                 }
@@ -300,20 +304,20 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             )
         }
         else {
-            Log.d(ListMusicActivity.TAG,"callStateListener 버전 이하 동작")
-            ListMusicActivity.phoneStateListener = object : PhoneStateListener() {
+            Log.d(TAG,"callStateListener 버전 이하 동작")
+            phoneStateListener = object : PhoneStateListener() {
                 override fun onCallStateChanged(state: Int, incomingNumber: String) {
 
                     when (state) {
                         TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING ->
                             if (mediaPlayer!!.isPlaying) {
-                                ListMusicActivity.ongoingCall = true
+                                ongoingCall = true
                                 pauseMusic()
                             }
                         TelephonyManager.CALL_STATE_IDLE ->
                             if (mediaPlayer != null) {
-                                if (ListMusicActivity.ongoingCall) {
-                                    ListMusicActivity.ongoingCall = false
+                                if (ongoingCall) {
+                                    ongoingCall = false
                                     playMusic()
                                 }
                             }
@@ -322,13 +326,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 }
             }
 
-            ListMusicActivity.telephonyManager!!.listen(ListMusicActivity.phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
+            telephonyManager!!.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
         }
-    }
-
-    fun replaceFragment(fragment: Fragment) {
-        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        transaction.replace(binding.viewSection.id, fragment).commit()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -338,27 +337,27 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             R.id.menu_home -> {
                 Log.d(TAG, "MainActivity - 홈 클릭")
                 homeFragment = HomeFragment.newInstance()
-                transaction.replace(binding.viewSection.id, homeFragment, "home")
+                transaction.replace(binding.viewSection.id, homeFragment, "home").addToBackStack(null)
             }
             R.id.menu_music4U -> {
                 Log.d(TAG, "MainActivity - 뮤직4U 클릭")
                 music4UFragment = Music4UFragment.newInstance()
-                transaction.replace(binding.viewSection.id, music4UFragment, "music4U")
+                transaction.replace(binding.viewSection.id, music4UFragment, "music4U").addToBackStack(null)
             }
             R.id.menu_my_music -> {
                 Log.d(TAG, "MainActivity - 내 음악 클릭")
                 myMusicFragment = MyMusicFragment.newInstance()
-                transaction.replace(binding.viewSection.id, myMusicFragment, "myMusic")
+                transaction.replace(binding.viewSection.id, myMusicFragment, "myMusic").addToBackStack(null)
             }
             R.id.menu_searching -> {
                 Log.d(TAG, "MainActivity - 탐색 클릭")
                 searchingFragment = SearchingFragment.newInstance()
-                transaction.replace(binding.viewSection.id, searchingFragment, "searching")
+                transaction.replace(binding.viewSection.id, searchingFragment, "searching").addToBackStack(null)
             }
             R.id.menu_always -> {
                 Log.d(TAG, "MainActivity - 24/7 클릭")
                 alwaysFragment = AlwaysFragment.newInstance()
-                transaction.replace(binding.viewSection.id, alwaysFragment, "always")
+                transaction.replace(binding.viewSection.id, alwaysFragment, "always").addToBackStack(null)
             }
         }
         transaction.addToBackStack(null)
@@ -399,6 +398,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         updateBottomMenu(binding.bottomNavigation)
         overridePendingTransition(0, 0)
 
+    }
+
+    override fun replaceFragment(fragment: Fragment) {
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.replace(binding.viewSection.id, fragment).addToBackStack(null).commit()
     }
 
 }

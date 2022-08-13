@@ -295,36 +295,39 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/my_album_btn"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_section"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="내 앨범"
-        android:textColor="@color/black"
-        android:textSize="19sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/album_section_header"
+        android:layout_marginTop="15dp"
+        app:tabIndicatorColor="@color/black"
+        app:tabSelectedTextColor="@color/black"
+        app:tabGravity="start"
+        app:layout_constraintTop_toBottomOf="@id/alot_section"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alot_section" />
+        app:layout_constraintBottom_toTopOf="@id/album_section_header">
 
-    <TextView
-        android:id="@+id/collab_album_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="30dp"
-        android:text="콜라보 앨범"
-        android:textSize="19sp"
-        app:layout_constraintLeft_toRightOf="@id/my_album_btn"
-        app:layout_constraintTop_toBottomOf="@+id/alot_section" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="내 앨범"
+            android:textColor="@color/black"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="콜라보 앨범"/>
+
+    </com.google.android.material.tabs.TabLayout>
 
     <LinearLayout
         android:id="@+id/album_section_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@id/my_album_btn"
+        app:layout_constraintTop_toBottomOf="@id/tab_section"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
