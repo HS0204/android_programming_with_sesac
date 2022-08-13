@@ -1,9 +1,18 @@
 package hs.project.secondweek
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyCallback
+import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
@@ -15,9 +24,25 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import hs.project.secondweek.Adapter.mediaPlayer
+import hs.project.secondweek.Adapter.MusicListAdapter
+import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.Fragment.*
 import hs.project.secondweek.databinding.ActivityMainBinding
+import java.io.File
+
+var mediaPlayer: MediaPlayer? = null
+
+var changeTextTitle = "곡 제목"
+var changeTextArtist = "가수"
+lateinit var changeCover: ByteArray
+
+var localMusicAdapter: MusicListAdapter? = null
+var localMusicList = ArrayList<MusicInfoData>()
+var songe: MusicInfoData? = null
+
+var currentSongIndex = 0
+var musicPosition = 0
+
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -51,6 +76,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         List = binding.musicList
 
         requestPermission()
+        callStateListener()
+
+        if (mediaPlayer == null)
+            mediaPlayer = MediaPlayer()
 
         homeFragment = HomeFragment.newInstance()
         supportFragmentManager.beginTransaction().add(binding.viewSection.id, homeFragment).commit()
@@ -70,12 +99,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         binding.musicPlayerSection.setOnClickListener {
             Log.d("MYLOG", "MainActivity -> 하단 음악 바를 클릭")
-            if (mediaPlayer == null) {
-                Toast.makeText(this, "리스트 버튼을 클릭하여 음악을 선택해주세요", Toast.LENGTH_SHORT).show()
-                    .toString()
-            } else {
+            if (localMusicList.size != 0) {
                 val intent = Intent(this, PlayerMusicActivity::class.java)
                 startActivity(intent)
+            } else {
+                Toast.makeText(this, "리스트 버튼을 클릭하여 음악을 선택해주세요", Toast.LENGTH_SHORT).show()
+                    .toString()
             }
         }
 
@@ -91,19 +120,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "MainActivity - onStart() 호출")
+        initializeData()
     }
 
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "MainActivity - onResume() 호출")
-
-        binding.musicTitle.isSingleLine = true
-        binding.musicTitle.isSelected = true
-        binding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
-
-        binding.musicSinger.isSingleLine = true
-        binding.musicSinger.isSelected = true
-        binding.musicSinger.ellipsize = TextUtils.TruncateAt.MARQUEE
+        initializeLayout()
     }
 
     override fun onPause() {
@@ -128,8 +151,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     private fun requestPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_PHONE_STATE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             val permissions = arrayOf(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_PHONE_STATE
@@ -138,25 +168,97 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_CODE) {
             if (grantResults.isNotEmpty()) {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "저장소 접근 허용", Toast.LENGTH_SHORT).show()
-                }
-                else {
+                } else {
                     Toast.makeText(this, "저장소 접근 불가", Toast.LENGTH_SHORT).show()
                 }
 
                 if (grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "핸드폰 상태 접근 허용", Toast.LENGTH_SHORT).show()
-                }
-                else {
+                } else {
                     Toast.makeText(this, "핸드폰 상태 접근 불가", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+    }
+
+    private fun initializeData() {
+        Log.d(TAG, "MainActivity - 데이터 초기화")
+        localMusicList = getMusic()
+    }
+
+    @SuppressLint("Recycle", "Range")
+    private fun getMusic(): ArrayList<MusicInfoData> {
+        val tempList = ArrayList<MusicInfoData>()
+        val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
+        val projection = arrayOf(
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.DATE_ADDED,
+            MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.ALBUM_ID
+        )
+        val cursor = this.contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            projection, selection, null, MediaStore.Audio.Media.DATE_ADDED + " DESC", null
+        )
+
+        if (cursor != null) {
+            if (cursor.moveToFirst())
+                do {
+                    val titleC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
+                    val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
+                    val albumC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
+                    val artistC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
+                    val pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
+                    val durationC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
+                    val albumIdC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)).toString()
+                    val uri = Uri.parse("content://media/external/audio/albumart")
+                    val artUriC = Uri.withAppendedPath(uri, albumIdC).toString()
+
+                    val music = MusicInfoData(
+                        id = idC,
+                        title = titleC,
+                        album = albumC,
+                        artist = artistC,
+                        path = pathC,
+                        duration = durationC,
+                        artUri = artUriC
+                    )
+                    val file = File(music.path)
+
+                    if(file.exists()) {
+                        tempList.add(music)
+                    }
+                } while (cursor.moveToNext())
+            cursor.close()
+        }
+        return tempList
+    }
+
+    private fun initializeLayout() {
+        Log.d(TAG, "MainActivity - 레이아웃 초기화")
+        binding.musicTitle.isSingleLine = true
+        binding.musicTitle.isSelected = true
+        binding.musicTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+
+        binding.musicSinger.isSingleLine = true
+        binding.musicSinger.isSelected = true
+        binding.musicSinger.ellipsize = TextUtils.TruncateAt.MARQUEE
+
+
     }
 
     private fun pauseMusic() {
@@ -167,6 +269,61 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private fun playMusic() {
         PlayN?.setImageResource(R.drawable.icon_pause)
         mediaPlayer!!.start()
+    }
+
+    private fun callStateListener() {
+        ListMusicActivity.telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Log.d(ListMusicActivity.TAG,"callStateListener 버전 이상 동작")
+            ListMusicActivity.telephonyManager?.registerTelephonyCallback(
+                mainExecutor,
+                object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+                    override fun onCallStateChanged(state: Int) {
+                        when (state) {
+                            TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING ->
+                                if (mediaPlayer!!.isPlaying) {
+                                    ListMusicActivity.ongoingCall = true
+                                    pauseMusic()
+                                }
+                            TelephonyManager.CALL_STATE_IDLE ->
+                                if (mediaPlayer != null) {
+                                    if (ListMusicActivity.ongoingCall) {
+                                        ListMusicActivity.ongoingCall = false
+                                        playMusic()
+                                    }
+                                }
+                        }
+                    }
+
+                }
+            )
+        }
+        else {
+            Log.d(ListMusicActivity.TAG,"callStateListener 버전 이하 동작")
+            ListMusicActivity.phoneStateListener = object : PhoneStateListener() {
+                override fun onCallStateChanged(state: Int, incomingNumber: String) {
+
+                    when (state) {
+                        TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING ->
+                            if (mediaPlayer!!.isPlaying) {
+                                ListMusicActivity.ongoingCall = true
+                                pauseMusic()
+                            }
+                        TelephonyManager.CALL_STATE_IDLE ->
+                            if (mediaPlayer != null) {
+                                if (ListMusicActivity.ongoingCall) {
+                                    ListMusicActivity.ongoingCall = false
+                                    playMusic()
+                                }
+                            }
+                    }
+
+                }
+            }
+
+            ListMusicActivity.telephonyManager!!.listen(ListMusicActivity.phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -212,11 +369,21 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val searchingTag: Fragment? = supportFragmentManager.findFragmentByTag("searching")
         val alwaysTag: Fragment? = supportFragmentManager.findFragmentByTag("always")
 
-        if(homeTag != null && homeTag.isVisible) {navigation.menu.findItem(R.id.menu_home).isChecked = true }
-        if(music4UTag != null && music4UTag.isVisible) {navigation.menu.findItem(R.id.menu_music4U).isChecked = true }
-        if(myMusicTag != null && myMusicTag.isVisible) {navigation.menu.findItem(R.id.menu_my_music).isChecked = true }
-        if(searchingTag != null && searchingTag.isVisible) {navigation.menu.findItem(R.id.menu_searching).isChecked = true }
-        if(alwaysTag != null && alwaysTag.isVisible) {navigation.menu.findItem(R.id.menu_always).isChecked = true }
+        if (homeTag != null && homeTag.isVisible) {
+            navigation.menu.findItem(R.id.menu_home).isChecked = true
+        }
+        if (music4UTag != null && music4UTag.isVisible) {
+            navigation.menu.findItem(R.id.menu_music4U).isChecked = true
+        }
+        if (myMusicTag != null && myMusicTag.isVisible) {
+            navigation.menu.findItem(R.id.menu_my_music).isChecked = true
+        }
+        if (searchingTag != null && searchingTag.isVisible) {
+            navigation.menu.findItem(R.id.menu_searching).isChecked = true
+        }
+        if (alwaysTag != null && alwaysTag.isVisible) {
+            navigation.menu.findItem(R.id.menu_always).isChecked = true
+        }
     }
 
     override fun onBackPressed() {

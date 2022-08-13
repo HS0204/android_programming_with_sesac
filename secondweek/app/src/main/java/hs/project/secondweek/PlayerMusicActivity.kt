@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import eightbitlab.com.blurview.RenderScriptBlur
-import hs.project.secondweek.Adapter.*
 import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.Service.MusicService
 import hs.project.secondweek.databinding.ActivityPlayermusicBinding
@@ -35,7 +34,7 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
         var isRepeat: Boolean = false
         var isShuffle: Boolean = false
-        var tempTrack: ArrayList<MusicInfoData> = myListTrack
+        var tempTrack: ArrayList<MusicInfoData> = localMusicList
         var tempPosition: Int = 0
 
         var musicService: MusicService? = null
@@ -153,12 +152,12 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     }
 
     private fun setCover() {
-        Glide.with(this).load(myListTrack[musicPosition].artUri).apply(
+        Glide.with(this).load(localMusicList[musicPosition].artUri).apply(
             RequestOptions()
                 .placeholder(R.drawable.album_art).fitCenter())
             .into(binding.albumArt)
 
-        Glide.with(this).load(myListTrack[musicPosition].artUri).apply(
+        Glide.with(this).load(localMusicList[musicPosition].artUri).apply(
             RequestOptions()
                 .placeholder(R.drawable.album_art).centerCrop())
             .into(binding.blurAlbumArt)
@@ -253,16 +252,16 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         Log.d(TAG, "PlayerMusicActivity - 셔플 ON")
         binding.shuffleIcon.setImageResource(R.drawable.icon_shuffle_on)
         isShuffle = true
-        tempTrack = myListTrack
+        tempTrack = localMusicList
         tempPosition = musicPosition
-        myListTrack.shuffle()
+        localMusicList.shuffle()
     }
 
     private fun offShuffle() {
         Log.d(TAG, "PlayerMusicActivity - 셔플 OFF")
         binding.shuffleIcon.setImageResource(R.drawable.icon_shuffle_off)
         isShuffle = false
-        myListTrack = tempTrack
+        localMusicList = tempTrack
         musicPosition = tempPosition
     }
 
@@ -281,13 +280,13 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
     private fun resetMusic() {
         mediaPlayer!!.reset()
-        mediaPlayer!!.setDataSource(myListTrack[musicPosition].path)
+        mediaPlayer!!.setDataSource(localMusicList[musicPosition].path)
         mediaPlayer!!.prepare()
         mediaPlayer!!.start()
-        Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${myListTrack[musicPosition].title}")
+        Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${localMusicList[musicPosition].title}")
 
-        changeTextTitle = myListTrack[musicPosition].title
-        changeTextArtist = myListTrack[musicPosition].artist
+        changeTextTitle = localMusicList[musicPosition].title
+        changeTextArtist = localMusicList[musicPosition].artist
 
         initializeLayout()
 
@@ -314,13 +313,13 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
     private fun setMusicPosition(increment: Boolean) {
         if (increment){
-            if (myListTrack.size - 1 == musicPosition)
+            if (localMusicList.size - 1 == musicPosition)
                 musicPosition = 0
             else ++musicPosition
         }
         else{
             if (0 == musicPosition)
-                musicPosition = myListTrack.size - 1
+                musicPosition = localMusicList.size - 1
             else --musicPosition
         }
     }

@@ -8,11 +8,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
-import hs.project.secondweek.Adapter.musicPosition
-import hs.project.secondweek.Adapter.myListTrack
-import hs.project.secondweek.ApplicationClass
-import hs.project.secondweek.PlayerMusicActivity
-import hs.project.secondweek.R
+import hs.project.secondweek.*
 
 class MusicService: Service() {
     private var musicBinder = MusicBinder()
@@ -58,8 +54,8 @@ class MusicService: Service() {
         val notification = androidx.core.app.NotificationCompat.Builder(baseContext,
             ApplicationClass.CHANNEL_ID
         )
-            .setContentTitle(myListTrack[musicPosition].title)
-            .setContentText(myListTrack[musicPosition].artist)
+            .setContentTitle(localMusicList[musicPosition].title)
+            .setContentText(localMusicList[musicPosition].artist)
             .setSmallIcon(R.drawable.icon_music_list)
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.album_art))
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSession.sessionToken))

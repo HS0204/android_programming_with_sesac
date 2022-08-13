@@ -1,14 +1,19 @@
 package hs.project.secondweek.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import hs.project.secondweek.R
+import hs.project.secondweek.ListMusicActivity
+import hs.project.secondweek.databinding.FragmentMymusicBinding
+import hs.project.secondweek.localMusicList
 
 class MyMusicFragment: Fragment() {
+
+    private lateinit var binding: FragmentMymusicBinding
 
     companion object {
         const val TAG: String = "MYLOG"
@@ -27,16 +32,26 @@ class MyMusicFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // 뷰 inflate
+    ): View {
         Log.d(TAG, "MyMusicFragment - onCreateView() 호출")
-        return inflater.inflate(R.layout.fragment_mymusic, container, false)
+        binding = FragmentMymusicBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // 프래그먼트 뷰 초기값 설정 -> RecyclerView 어댑터 등
         Log.d(TAG, "MyMusicFragment - onViewCreated() 호출")
         super.onViewCreated(view, savedInstanceState)
+
+        binding.localCount.text = "${localMusicList.size}곡"
+
+        binding.localSection.setOnClickListener {
+            val intent = Intent(activity, ListMusicActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+            // !!!!!!!!음악 액티비티 팝업 애니메이션 필요
+        }
+
     }
 
     override fun onResume() {

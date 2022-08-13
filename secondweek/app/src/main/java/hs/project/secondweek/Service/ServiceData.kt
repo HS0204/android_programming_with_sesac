@@ -1,7 +1,7 @@
 package hs.project.secondweek.Service
 
-import hs.project.secondweek.Adapter.mediaPlayer
-import hs.project.secondweek.Adapter.songe
+import hs.project.secondweek.mediaPlayer
+import hs.project.secondweek.songe
 
 class ServiceData {
     companion object {

@@ -1,14 +1,8 @@
 package hs.project.secondweek
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.telephony.PhoneStateListener
-import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
@@ -19,11 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import hs.project.secondweek.Adapter.*
-import hs.project.secondweek.Data.MusicInfoData
+import hs.project.secondweek.Adapter.MusicListAdapter
 import hs.project.secondweek.Service.MusicService
 import hs.project.secondweek.databinding.ActivityListmusicBinding
-import java.io.File
 
 // 서비스
 private var player: MusicService? = null
@@ -82,7 +74,6 @@ class ListMusicActivity : AppCompatActivity() {
     override fun onStart() {
         Log.d(TAG, "ListMusicActivity - onStart() 호출")
         super.onStart()
-        initializeData()
     }
 
     override fun onResume() {
@@ -95,7 +86,6 @@ class ListMusicActivity : AppCompatActivity() {
     override fun onPause() {
         Log.d(TAG, "ListMusicActivity - onPause() 호출")
         super.onPause()
-        callStateListener()
     }
 
     override fun onStop() {
@@ -106,17 +96,11 @@ class ListMusicActivity : AppCompatActivity() {
     override fun onRestart() {
         Log.d(TAG, "ListMusicActivity - onRestart() 호출")
         super.onRestart()
-        callStateListener()
     }
 
     override fun onDestroy() {
         Log.d(TAG, "ListMusicActivity - onDestroy() 호출")
         super.onDestroy()
-    }
-
-    private fun initializeData() {
-        Log.d(TAG, "ListMusicActivity - 데이터 초기화")
-        myListTrack = getMusic()
     }
 
     private fun initializeLayout() {
@@ -127,7 +111,7 @@ class ListMusicActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
 
-        dieAdapter = MusicListAdapter(this, myListTrack)
+        dieAdapter = MusicListAdapter(this, localMusicList)
         recyclerView.adapter = dieAdapter
 
     }
@@ -156,65 +140,13 @@ class ListMusicActivity : AppCompatActivity() {
                 binding.musicList.setImageResource(R.drawable.icon_music_list)
             }
             else {
-                Glide.with(this).load(myListTrack[musicPosition].artUri).apply(
+                Glide.with(this).load(localMusicList[musicPosition].artUri).apply(
                     RequestOptions()
                         .placeholder(R.drawable.album_art).fitCenter())
                     .into(binding.musicList)
             }
         }
 
-    }
-
-    @SuppressLint("Recycle", "Range")
-    private fun getMusic(): ArrayList<MusicInfoData> {
-        val tempList = ArrayList<MusicInfoData>()
-        val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
-        val projection = arrayOf(
-            MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.DATE_ADDED,
-            MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.ALBUM_ID
-        )
-        val cursor = this.contentResolver.query(
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-            projection, selection, null, MediaStore.Audio.Media.DATE_ADDED + " DESC", null
-        )
-
-        if (cursor != null) {
-            if (cursor.moveToFirst())
-                do {
-                    val titleC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
-                    val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
-                    val albumC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
-                    val artistC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
-                    val pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
-                    val durationC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
-                    val albumIdC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)).toString()
-                    val uri = Uri.parse("content://media/external/audio/albumart")
-                    val artUriC = Uri.withAppendedPath(uri, albumIdC).toString()
-
-                    val music = MusicInfoData(
-                        id = idC,
-                        title = titleC,
-                        album = albumC,
-                        artist = artistC,
-                        path = pathC,
-                        duration = durationC,
-                        artUri = artUriC
-                    )
-                    val file = File(music.path)
-
-                    if(file.exists()) {
-                        tempList.add(music)
-                    }
-                } while (cursor.moveToNext())
-            cursor.close()
-        }
-        return tempList
     }
 
     private fun pauseMusic() {
@@ -225,59 +157,6 @@ class ListMusicActivity : AppCompatActivity() {
     private fun playMusic() {
         Play?.setImageResource(R.drawable.icon_pause)
         mediaPlayer!!.start()
-    }
-
-    private fun callStateListener() {
-        telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            telephonyManager?.registerTelephonyCallback(
-                mainExecutor,
-                object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-                    override fun onCallStateChanged(state: Int) {
-                        when (state) {
-                            TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING ->
-                                if (mediaPlayer!!.isPlaying) {
-                                    ongoingCall = true
-                                    pauseMusic()
-                                }
-                            TelephonyManager.CALL_STATE_IDLE ->
-                                if (mediaPlayer != null) {
-                                    if (ongoingCall) {
-                                        ongoingCall = false
-                                        playMusic()
-                                    }
-                                }
-                        }
-                    }
-
-                }
-            )
-        }
-        else {
-            phoneStateListener = object : PhoneStateListener() {
-                override fun onCallStateChanged(state: Int, incomingNumber: String) {
-
-                    when (state) {
-                        TelephonyManager.CALL_STATE_OFFHOOK, TelephonyManager.CALL_STATE_RINGING ->
-                            if (mediaPlayer!!.isPlaying) {
-                                ongoingCall = true
-                                pauseMusic()
-                            }
-                        TelephonyManager.CALL_STATE_IDLE ->
-                            if (mediaPlayer != null) {
-                                if (ongoingCall) {
-                                    ongoingCall = false
-                                    playMusic()
-                                }
-                            }
-                    }
-
-                }
-            }
-
-            telephonyManager!!.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
-        }
     }
 
     override fun onBackPressed() {
