@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import eightbitlab.com.blurview.RenderScriptBlur
 import hs.project.secondweek.Data.MusicInfoData
+import hs.project.secondweek.Data.formatDuration
 import hs.project.secondweek.Service.MusicService
 import hs.project.secondweek.databinding.ActivityPlayermusicBinding
 
@@ -32,7 +33,6 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         var seekbar: SeekBar? = null
         var playBtn: ImageView? = null
 
-        var isRepeat: Boolean = false
         var isShuffle: Boolean = false
         var tempTrack: ArrayList<MusicInfoData> = customMusicList
         var tempPosition: Int = 0
@@ -51,14 +51,24 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         playBtn = binding.controlIcon
         totalTime = mediaPlayer!!.duration
 
+        mediaPlayer!!.isLooping = false
+
         binding.controlIcon.setOnClickListener { controlMusic() }
 
         binding.previousIcon.setOnClickListener { moveMusic(increment = false) }
         binding.nextIcon.setOnClickListener { moveMusic(increment = true) }
 
         binding.repeatIcon.setOnClickListener {
-            if(isRepeat) offRepeat()
-            else onRepeat()
+            if (!mediaPlayer!!.isLooping) {
+                Log.d(TAG, "PlayerMusicActivity - 한 곡 루프 되도록 버튼 클릭")
+                mediaPlayer!!.isLooping = true
+                binding.repeatIcon.setImageResource(R.drawable.icon_repeat_one_music)
+            }
+            else {
+                Log.d(TAG, "PlayerMusicActivity - 리스트 루프 되도록 버튼 클릭")
+                mediaPlayer!!.isLooping = false
+                binding.repeatIcon.setImageResource(R.drawable.icon_repeat_list_once)
+            }
         }
 
         binding.shuffleIcon.setOnClickListener {
@@ -82,7 +92,7 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "PlayerMusicActivity - onResume() 호출")
-        initializeLayout() // 어댑터X
+        initializeLayout()
         initializeSeekBar()
 
         if (mediaPlayer!!.isPlaying)
@@ -119,8 +129,7 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         binding.musicBar.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    if (fromUser)
-                        mediaPlayer!!.seekTo(progress)
+                    if (fromUser) mediaPlayer!!.seekTo(progress)
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar?) { }
                 override fun onStopTrackingTouch(seekBar: SeekBar?) { }
@@ -175,7 +184,15 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
                 try {
                     seekBar.progress = mediaPlayer!!.currentPosition
                     handler.postDelayed(this, 1000)
-                    controlRepeat()
+
+                    var currentTime = formatDuration((mediaPlayer!!.currentPosition).toLong())
+                    var endTime = formatDuration((mediaPlayer!!.duration).toLong())
+
+                    Log.d(TAG, "${currentTime} | ${endTime} | ${mediaPlayer!!.isLooping}")
+                    if (!mediaPlayer!!.isLooping && currentTime == endTime) {
+                        Log.d(TAG, "진입")
+                        moveMusic(true)
+                    }
                     settingMusicTime()
                 } catch (e: Exception) {
                     seekBar.progress = 0
@@ -184,35 +201,9 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         },0)
     }
 
-    private fun musicTimeCal(time: Int): String {
-        lateinit var timeLabel: String
-        var min = time / 1000 / 60
-        var sec = time / 1000 % 60
-
-        timeLabel = if (min < 10 ) {
-            "0$min:"
-        } else {
-            "$min:"
-        }
-        if (sec < 10) {
-            timeLabel += "0"
-        }
-        timeLabel += sec
-
-        return timeLabel
-    }
-
     private fun settingMusicTime() {
-        var currentTime = musicTimeCal(mediaPlayer!!.currentPosition)
-        var remainingTime = musicTimeCal((mediaPlayer!!.duration) - mediaPlayer!!.currentPosition)
-
-        binding.musicCurrentTime.text = currentTime
-        binding.musicRemainingTime.text = remainingTime
-
-        if (!mediaPlayer!!.isPlaying && seekbar?.progress!! == 0) {
-            binding.musicCurrentTime.text = "00:00"
-            binding.musicRemainingTime.text = musicTimeCal(mediaPlayer!!.duration)
-        }
+        binding.musicCurrentTime.text = formatDuration(mediaPlayer!!.currentPosition.toLong())
+        binding.musicRemainingTime.text = formatDuration((mediaPlayer!!.duration - mediaPlayer!!.currentPosition).toLong())
     }
 
     private fun controlMusic() {
@@ -223,28 +214,6 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         else {
             setPlayingIcon()
             mediaPlayer!!.start()
-        }
-    }
-
-    private fun onRepeat() {
-        Log.d(TAG, "PlayerMusicActivity - 한 곡 반복")
-        binding.repeatIcon.setImageResource(R.drawable.icon_repeat_one_music)
-        isRepeat = true
-    }
-
-    private fun offRepeat() {
-        Log.d(TAG, "PlayerMusicActivity - 전곡 반복")
-        binding.repeatIcon.setImageResource(R.drawable.icon_repeat_list_once)
-        isRepeat = false
-    }
-
-    private fun controlRepeat() {
-        if (seekbar?.progress == mediaPlayer!!.duration) {
-            if (isRepeat) {
-                mediaPlayer!!.start()
-            }
-            else
-                moveMusic(true)
         }
     }
 
@@ -283,6 +252,7 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         mediaPlayer!!.setDataSource(customMusicList[musicPosition].path)
         mediaPlayer!!.prepare()
         mediaPlayer!!.start()
+        seekbar?.max = mediaPlayer!!.duration
         Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${customMusicList[musicPosition].title}")
 
         changeTextTitle = customMusicList[musicPosition].title
