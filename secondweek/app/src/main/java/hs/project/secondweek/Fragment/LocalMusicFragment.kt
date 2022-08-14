@@ -10,10 +10,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import hs.project.secondweek.*
 import hs.project.secondweek.Adapter.MusicListAdapter
+import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.databinding.FragmentLocalMusicBinding
-import hs.project.secondweek.localMusicList
-import hs.project.secondweek.musicListAdapter
+import hs.project.secondweek.databinding.LayoutBottomSheetBinding
 
 class LocalMusicFragment: Fragment() {
 
@@ -68,6 +72,45 @@ class LocalMusicFragment: Fragment() {
 
         musicListAdapter = MusicListAdapter(requireContext(), localMusicList, false)
         recyclerView.adapter = musicListAdapter
+
+        recyclerView.addOnItemTouchListener(
+            RecyclerItemClickListener(requireContext(), recyclerView,
+                object : RecyclerItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View, position: Int) {
+                        val music = MusicInfoData(
+                            id = localMusicList[position].id,
+                            title = localMusicList[position].title,
+                            album = localMusicList[position].album,
+                            artist = localMusicList[position].artist,
+                            path = localMusicList[position].path,
+                            duration = localMusicList[position].duration,
+                            artUri = localMusicList[position].artUri
+                        )
+
+                        val bottomSheetBinding by lazy { LayoutBottomSheetBinding.inflate(layoutInflater) }
+                        val bottomSheetDialog = BottomSheetDialog(requireContext())
+                        bottomSheetDialog.setContentView(bottomSheetBinding.root)
+
+                        Glide.with(requireContext()).load(localMusicList[position].artUri).apply(
+                            RequestOptions()
+                                .placeholder(R.drawable.album_art).fitCenter())
+                            .into(bottomSheetBinding.albumArt)
+
+                        bottomSheetBinding.title.text = localMusicList[position].title
+
+                        bottomSheetDialog.show()
+
+                        bottomSheetBinding.addBtn.setOnClickListener {
+                            Log.d("MYLOG", "${localMusicList[position].title},  customMusicList에 추가")
+                            customMusicList.add(music)
+                            selectedMusic = music
+                            mediaPlayer!!.start()
+
+                            bottomSheetDialog.dismiss()
+                        }
+                    }
+                })
+        )
 
     }
 

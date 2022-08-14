@@ -37,7 +37,7 @@ var changeTextArtist = "가수"
 lateinit var changeCover: ByteArray
 
 lateinit var musicListAdapter: MusicListAdapter
-var songe: MusicInfoData? = null
+var selectedMusic: MusicInfoData? = null
 
 var localMusicList = ArrayList<MusicInfoData>()
 var customMusicList = ArrayList<MusicInfoData>()

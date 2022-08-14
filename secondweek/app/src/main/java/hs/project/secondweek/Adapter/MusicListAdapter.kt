@@ -61,7 +61,6 @@ class MusicListAdapter(
             Glide.with(context).load(localMusicList[position].artUri)
                 .apply(RequestOptions().placeholder((R.drawable.album_art)).fitCenter())
                 .into(setCover)
-
             if (mediaPlayer == null)
                 mediaPlayer = MediaPlayer()
 
@@ -87,22 +86,7 @@ class MusicListAdapter(
                     CustomListMusicActivity.artistCustom?.text = changeTextArtist
                     CustomListMusicActivity.playBtnCustom?.setImageResource(R.drawable.icon_pause)
 
-                    songe = songInfo
-                }
-                else {
-                    Log.d("MYLOG", "${localMusicList[position].title}을 customMusicList에 추가")
-
-                    val music = MusicInfoData(
-                        id = localMusicList[position].id,
-                        title = localMusicList[position].title,
-                        album = localMusicList[position].album,
-                        artist = localMusicList[position].artist,
-                        path = localMusicList[position].path,
-                        duration = localMusicList[position].duration,
-                        artUri = localMusicList[position].artUri
-                    )
-
-                    customMusicList.add(music)
+                    // selectedMusic = songInfo
                 }
 
             }
