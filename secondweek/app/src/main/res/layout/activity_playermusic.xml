@@ -22,6 +22,8 @@
         android:id="@+id/music_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
         android:indeterminate="false"
         android:thumb="@drawable/seekbar_thumb"
         android:progressDrawable="@drawable/seekbar_bg"

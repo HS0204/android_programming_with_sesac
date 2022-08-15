@@ -28,6 +28,8 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     private val binding by lazy { ActivityPlayermusicBinding.inflate(layoutInflater) }
     val handler = Handler()
 
+    var tempMusicList = ArrayList<MusicInfoData>()
+
     companion object {
         const val TAG: String = "MYLOG"
 
@@ -35,8 +37,6 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         var playBtn: ImageView? = null
 
         var isShuffle: Boolean = false
-        var tempTrack: ArrayList<MusicInfoData> = customMusicList
-        var tempPosition: Int = 0
 
         var musicService: MusicService? = null
     }
@@ -110,6 +110,7 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "PlayerMusicActivity - onStop() 호출")
+        handler.removeMessages(0)
     }
 
     override fun onRestart() {
@@ -120,7 +121,6 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "PlayerMusicActivity - onDestroy() 호출")
-        handler.removeMessages(0)
         finish()
     }
 
@@ -163,12 +163,12 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     }
 
     private fun setCover() {
-        Glide.with(this).load(customMusicList[musicPosition].artUri).apply(
+        Glide.with(this).load(selectedMusic?.artUri).apply(
             RequestOptions()
                 .placeholder(R.drawable.album_art).fitCenter())
             .into(binding.albumArt)
 
-        Glide.with(this).load(customMusicList[musicPosition].artUri).apply(
+        Glide.with(this).load(selectedMusic?.artUri).apply(
             RequestOptions()
                 .placeholder(R.drawable.album_art).centerCrop())
             .into(binding.blurAlbumArt)
@@ -189,7 +189,7 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
                     var currentTime = formatDuration((mediaPlayer!!.currentPosition).toLong())
                     var endTime = formatDuration((mediaPlayer!!.duration).toLong())
 
-                    Log.d(TAG, "${currentTime} | ${endTime} | ${mediaPlayer!!.isLooping}")
+                    Log.d(TAG, "${currentTime} | ${endTime} | ${isShuffle}")
                     if (!mediaPlayer!!.isLooping && currentTime == endTime) {
                         Log.d(TAG, "진입")
                         moveMusic(true)
@@ -222,17 +222,18 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         Log.d(TAG, "PlayerMusicActivity - 셔플 ON")
         binding.shuffleIcon.setImageResource(R.drawable.icon_shuffle_on)
         isShuffle = true
-        tempTrack = customMusicList
-        tempPosition = musicPosition
+        tempMusicList.addAll(customMusicList)
         customMusicList.shuffle()
+
+        //shuffleMusicList = customMusicList
+        //customMusicList = shuffleMusicList
     }
 
     private fun offShuffle() {
         Log.d(TAG, "PlayerMusicActivity - 셔플 OFF")
         binding.shuffleIcon.setImageResource(R.drawable.icon_shuffle_off)
         isShuffle = false
-        customMusicList = tempTrack
-        musicPosition = tempPosition
+        customMusicList = tempMusicList
     }
 
     private fun moveMusic(increment: Boolean) {
@@ -249,15 +250,27 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     }
 
     private fun resetMusic() {
+        val music = MusicInfoData(
+            id = customMusicList[musicPosition].id,
+            title = customMusicList[musicPosition].title,
+            album = customMusicList[musicPosition].album,
+            artist = customMusicList[musicPosition].artist,
+            path = customMusicList[musicPosition].path,
+            duration = customMusicList[musicPosition].duration,
+            artUri = customMusicList[musicPosition].artUri
+        )
+
+        selectedMusic = music
+
         mediaPlayer!!.reset()
-        mediaPlayer!!.setDataSource(customMusicList[musicPosition].path)
+        mediaPlayer!!.setDataSource(selectedMusic?.path)
         mediaPlayer!!.prepare()
         mediaPlayer!!.start()
         seekbar?.max = mediaPlayer!!.duration
-        Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${customMusicList[musicPosition].title}")
+        Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${selectedMusic?.title}")
 
-        changeTextTitle = customMusicList[musicPosition].title
-        changeTextArtist = customMusicList[musicPosition].artist
+        changeTextTitle = selectedMusic!!.title
+        changeTextArtist = selectedMusic!!.artist
 
         initializeLayout()
 

@@ -3,7 +3,7 @@
     <item android:gravity="center_vertical">
         <shape android:shape="rectangle">
             <solid android:color="@color/seek_bar_bg"/>
-            <size android:height="10sp"/>
+            <size android:height="4dp"/>
         </shape>
     </item>
 
@@ -13,7 +13,7 @@
                 <item>
                     <shape android:shape="rectangle">
                         <solid android:color="@color/black"/>
-                        <size android:height="10sp"/>
+                        <size android:height="4dp"/>
                     </shape>
                 </item>
             </selector>
