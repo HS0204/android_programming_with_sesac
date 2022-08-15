@@ -59,6 +59,7 @@ class LocalMusicFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setAdapter()
+        musicClickListener()
 
     }
 
@@ -73,6 +74,9 @@ class LocalMusicFragment: Fragment() {
         musicListAdapter = MusicListAdapter(requireContext(), localMusicList, false)
         recyclerView.adapter = musicListAdapter
 
+    }
+
+    private fun musicClickListener() {
         recyclerView.addOnItemTouchListener(
             RecyclerItemClickListener(requireContext(), recyclerView,
                 object : RecyclerItemClickListener.OnItemClickListener {
@@ -104,14 +108,13 @@ class LocalMusicFragment: Fragment() {
                             Log.d("MYLOG", "${localMusicList[position].title},  customMusicList에 추가")
                             customMusicList.add(music)
                             selectedMusic = music
-                            mediaPlayer!!.start()
+                            // mediaPlayer!!.start()
 
                             bottomSheetDialog.dismiss()
                         }
                     }
                 })
         )
-
     }
 
     override fun onResume() {

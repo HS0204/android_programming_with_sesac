@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -12,8 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import hs.project.secondweek.Adapter.MusicListAdapter
+import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.databinding.ActivityCustomListMusicBinding
+import hs.project.secondweek.databinding.LayoutPlayingBottomSheetBinding
 
 class CustomListMusicActivity : AppCompatActivity() {
 
@@ -36,6 +40,7 @@ class CustomListMusicActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setAdapter()
+        musicClickListener()
 
         titleCustom = binding.musicTitle
         artistCustom = binding.musicSinger
@@ -81,6 +86,65 @@ class CustomListMusicActivity : AppCompatActivity() {
         musicListAdapter = MusicListAdapter(this, customMusicList, true)
         recyclerView.adapter = musicListAdapter
 
+    }
+
+    private fun musicClickListener() {
+
+
+        recyclerView.addOnItemTouchListener(
+            RecyclerItemClickListener(this@CustomListMusicActivity, recyclerView,
+                object : RecyclerItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View, position: Int) {
+                        val music = MusicInfoData(
+                            id = customMusicList[position].id,
+                            title = customMusicList[position].title,
+                            album = customMusicList[position].album,
+                            artist = customMusicList[position].artist,
+                            path = customMusicList[position].path,
+                            duration = customMusicList[position].duration,
+                            artUri = customMusicList[position].artUri
+                        )
+
+                        val bottomSheetBinding by lazy { LayoutPlayingBottomSheetBinding.inflate(layoutInflater) }
+                        val bottomSheetDialog = BottomSheetDialog(this@CustomListMusicActivity)
+                        bottomSheetDialog.setContentView(bottomSheetBinding.root)
+
+                        bottomSheetDialog.show()
+
+                        bottomSheetBinding.playBtn.setOnClickListener {
+                            Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${music.title}")
+
+                            musicPosition = position
+
+                            mediaPlayer!!.reset()
+                            mediaPlayer!!.setDataSource(music.path)
+                            mediaPlayer!!.prepare()
+                            mediaPlayer!!.start()
+
+                            changeTextTitle = music.title
+                            changeTextArtist = music.artist
+
+                            MainActivity.TitleN?.text = changeTextTitle
+                            MainActivity.ArtistN?.text = changeTextArtist
+                            MainActivity.PlayN?.setImageResource(R.drawable.icon_pause)
+
+                            titleCustom?.text = changeTextTitle
+                            artistCustom?.text = changeTextArtist
+                            playBtnCustom?.setImageResource(R.drawable.icon_pause)
+
+                            bottomSheetDialog.dismiss()
+                        }
+
+                        bottomSheetBinding.deleteBtn.setOnClickListener {
+                            Log.d("MYLOG", "${music.title}, customMusicList에서 삭제")
+
+                            musicListAdapter.removeData(position)
+
+                            bottomSheetDialog.dismiss()
+                        }
+                    }
+                })
+        )
     }
 
     private fun initializeMiniPlayer() {

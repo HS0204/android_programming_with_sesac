@@ -10,10 +10,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import hs.project.secondweek.*
 import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.Data.formatDuration
+import hs.project.secondweek.R
 import hs.project.secondweek.databinding.LayoutMusicListBinding
+import hs.project.secondweek.localMusicList
+import hs.project.secondweek.mediaPlayer
+import java.util.*
 
 class MusicListAdapter(
     private val context: Context,
@@ -43,6 +46,16 @@ class MusicListAdapter(
         return dataList.size
     }
 
+    fun removeData (position: Int) {
+        dataList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun swapData (fromPosition: Int, toPosition: Int) {
+        Collections.swap(dataList, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
+    }
+
     inner class MusicListViewHolder(binding: LayoutMusicListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val root = binding.root
@@ -61,39 +74,13 @@ class MusicListAdapter(
             Glide.with(context).load(localMusicList[position].artUri)
                 .apply(RequestOptions().placeholder((R.drawable.album_art)).fitCenter())
                 .into(setCover)
+
             if (mediaPlayer == null)
                 mediaPlayer = MediaPlayer()
 
-            root.setOnClickListener {
-                if (custom) {
-                    Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${localMusicList[position].title}")
-
-                    musicPosition = position
-
-                    mediaPlayer!!.reset()
-                    mediaPlayer!!.setDataSource(localMusicList[position].path)
-                    mediaPlayer!!.prepare()
-                    mediaPlayer!!.start()
-
-                    changeTextTitle = songTitle.text.toString()
-                    changeTextArtist = songArtist.text.toString()
-
-                    MainActivity.TitleN?.text = changeTextTitle
-                    MainActivity.ArtistN?.text = changeTextArtist
-                    MainActivity.PlayN?.setImageResource(R.drawable.icon_pause)
-
-                    CustomListMusicActivity.titleCustom?.text = changeTextTitle
-                    CustomListMusicActivity.artistCustom?.text = changeTextArtist
-                    CustomListMusicActivity.playBtnCustom?.setImageResource(R.drawable.icon_pause)
-
-                    // selectedMusic = songInfo
-                }
-
-            }
 
         }
 
     }
-
 
 }
