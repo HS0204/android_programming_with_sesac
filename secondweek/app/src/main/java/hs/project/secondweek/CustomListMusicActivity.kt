@@ -9,12 +9,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import hs.project.secondweek.Adapter.MusicListAdapter
+import hs.project.secondweek.Adapter.MusicSwipeCallback
 import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.databinding.ActivityCustomListMusicBinding
 import hs.project.secondweek.databinding.LayoutPlayingBottomSheetBinding
@@ -86,15 +88,19 @@ class CustomListMusicActivity : AppCompatActivity() {
         musicListAdapter = MusicListAdapter(this, customMusicList, true)
         recyclerView.adapter = musicListAdapter
 
+        val musicSwipeCallback = MusicSwipeCallback(musicListAdapter)
+
+        ItemTouchHelper(musicSwipeCallback).attachToRecyclerView(recyclerView)
+
     }
 
     private fun musicClickListener() {
-
 
         recyclerView.addOnItemTouchListener(
             RecyclerItemClickListener(this@CustomListMusicActivity, recyclerView,
                 object : RecyclerItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
+
                         val music = MusicInfoData(
                             id = customMusicList[position].id,
                             title = customMusicList[position].title,
@@ -111,26 +117,14 @@ class CustomListMusicActivity : AppCompatActivity() {
 
                         bottomSheetDialog.show()
 
-                        bottomSheetBinding.playBtn.setOnClickListener {
-                            Log.d("MYLOG", "음악 플레이어 $mediaPlayer | 현재 곡 ${music.title}")
+                        bottomSheetBinding.moveUpBtn.setOnClickListener {
+                            if (position != 0) musicListAdapter.swapData(position, position-1)
 
-                            musicPosition = position
+                            bottomSheetDialog.dismiss()
+                        }
 
-                            mediaPlayer!!.reset()
-                            mediaPlayer!!.setDataSource(music.path)
-                            mediaPlayer!!.prepare()
-                            mediaPlayer!!.start()
-
-                            changeTextTitle = music.title
-                            changeTextArtist = music.artist
-
-                            MainActivity.TitleN?.text = changeTextTitle
-                            MainActivity.ArtistN?.text = changeTextArtist
-                            MainActivity.PlayN?.setImageResource(R.drawable.icon_pause)
-
-                            titleCustom?.text = changeTextTitle
-                            artistCustom?.text = changeTextArtist
-                            playBtnCustom?.setImageResource(R.drawable.icon_pause)
+                        bottomSheetBinding.moveDownBtn.setOnClickListener {
+                            if (position != customMusicList.size-1) musicListAdapter.swapData(position, position+1)
 
                             bottomSheetDialog.dismiss()
                         }
@@ -142,6 +136,7 @@ class CustomListMusicActivity : AppCompatActivity() {
 
                             bottomSheetDialog.dismiss()
                         }
+
                     }
                 })
         )

@@ -108,7 +108,26 @@ class LocalMusicFragment: Fragment() {
                             Log.d("MYLOG", "${localMusicList[position].title},  customMusicList에 추가")
                             customMusicList.add(music)
                             selectedMusic = music
-                            // mediaPlayer!!.start()
+
+                            //musicPosition = position
+
+                            Log.d("MYLOG", "음악 플레이어 $mediaPlayer 재생 | 현재 곡 ${music.title}")
+                            mediaPlayer!!.reset()
+                            mediaPlayer!!.setDataSource(music.path)
+                            mediaPlayer!!.prepare()
+                            mediaPlayer!!.start()
+
+                            changeTextTitle = music.title
+                            changeTextArtist = music.artist
+
+                            MainActivity.TitleN?.text = changeTextTitle
+                            MainActivity.ArtistN?.text = changeTextArtist
+                            MainActivity.PlayN?.setImageResource(R.drawable.icon_pause)
+
+                            CustomListMusicActivity.titleCustom?.text = changeTextTitle
+                            CustomListMusicActivity.artistCustom?.text = changeTextArtist
+                            CustomListMusicActivity.playBtnCustom?.setImageResource(R.drawable.icon_pause)
+
 
                             bottomSheetDialog.dismiss()
                         }

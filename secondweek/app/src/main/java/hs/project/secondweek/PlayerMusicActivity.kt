@@ -26,6 +26,7 @@ var totalTime: Int = 0
 class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
     private val binding by lazy { ActivityPlayermusicBinding.inflate(layoutInflater) }
+    val handler = Handler()
 
     companion object {
         const val TAG: String = "MYLOG"
@@ -119,6 +120,7 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "PlayerMusicActivity - onDestroy() 호출")
+        handler.removeMessages(0)
         finish()
     }
 
@@ -178,7 +180,6 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         val seekBar = binding.musicBar
         seekBar.max = mediaPlayer!!.duration
 
-        val handler = Handler()
         handler.postDelayed(object: Runnable {
             override fun run() {
                 try {
