@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions
 import eightbitlab.com.blurview.RenderScriptBlur
 import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.Data.formatDuration
+import hs.project.secondweek.Data.setMusicPosition
 import hs.project.secondweek.Service.MusicService
 import hs.project.secondweek.databinding.ActivityPlayermusicBinding
 
@@ -45,6 +46,11 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         Log.d(TAG, "PlayerMusicActivity - onBackPressed() 호출")
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        // 서비스 시작
+        val intent = Intent(this, MusicService::class.java)
+        bindService(intent, this, BIND_AUTO_CREATE)
+        startService(intent)
 
         blurBackground()
 
@@ -285,25 +291,14 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
     private fun setPauseIcon() {
         playBtn?.setImageResource(R.drawable.icon_playing)
+        musicService!!.showNotification(R.drawable.icon_playing)
         MainActivity.PlayN?.setImageResource(R.drawable.icon_playing)
     }
 
     private fun setPlayingIcon() {
         playBtn?.setImageResource(R.drawable.icon_pause)
+        musicService!!.showNotification(R.drawable.icon_pause)
         MainActivity.PlayN?.setImageResource(R.drawable.icon_pause)
-    }
-
-    private fun setMusicPosition(increment: Boolean) {
-        if (increment){
-            if (customMusicList.size - 1 == musicPosition)
-                musicPosition = 0
-            else ++musicPosition
-        }
-        else{
-            if (0 == musicPosition)
-                musicPosition = customMusicList.size - 1
-            else --musicPosition
-        }
     }
 
     private fun loadMusicData() {
@@ -319,21 +314,6 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         }.apply()
     }
 
-
-
-
-    private fun startService() {
-        // 서비스 시작
-        val intent = Intent(this, MusicService::class.java)
-        bindService(intent, this, BIND_AUTO_CREATE)
-        //startService(intent)
-    }
-
-    private fun releaseMusicPlayer() {
-        Log.d(TAG, "PlayerMusicActivity - 음악 플레이어 ${musicService!!.player} 삭제")
-        musicService!!.player!!.release()
-    }
-
     override fun onBackPressed() {
         Log.d(TAG, "PlayerMusicActivity - onBackPressed() 호출")
         super.onBackPressed()
@@ -341,11 +321,13 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
         overridePendingTransition(0,0)
     }
 
+
+
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
         Log.d(TAG, "PlayerMusicActivity - 서비스 시작")
         val binder = service as MusicService.MusicBinder
         musicService = binder.currentService()
-        musicService!!.showNotification()
+        musicService!!.showNotification(R.drawable.icon_pause)
     }
 
     override fun onServiceDisconnected(name: ComponentName?) {

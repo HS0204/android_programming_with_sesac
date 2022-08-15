@@ -177,11 +177,13 @@ class CustomListMusicActivity : AppCompatActivity() {
 
     private fun pauseMusic() {
         playBtnCustom?.setImageResource(R.drawable.icon_playing)
+        PlayerMusicActivity.musicService!!.showNotification(R.drawable.icon_playing)
         mediaPlayer!!.pause()
     }
 
     private fun playMusic() {
         playBtnCustom?.setImageResource(R.drawable.icon_pause)
+        PlayerMusicActivity.musicService!!.showNotification(R.drawable.icon_pause)
         mediaPlayer!!.start()
     }
 }

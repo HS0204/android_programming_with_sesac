@@ -27,6 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import hs.project.secondweek.Adapter.MusicListAdapter
 import hs.project.secondweek.Data.MusicInfoData
 import hs.project.secondweek.Fragment.*
+import hs.project.secondweek.PlayerMusicActivity.Companion.musicService
 import hs.project.secondweek.databinding.ActivityMainBinding
 import java.io.File
 
@@ -267,11 +268,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private fun pauseMusic() {
         PlayN?.setImageResource(R.drawable.icon_playing)
+        musicService!!.showNotification(R.drawable.icon_playing)
         mediaPlayer!!.pause()
     }
 
     private fun playMusic() {
         PlayN?.setImageResource(R.drawable.icon_pause)
+        musicService!!.showNotification(R.drawable.icon_pause)
         mediaPlayer!!.start()
     }
 

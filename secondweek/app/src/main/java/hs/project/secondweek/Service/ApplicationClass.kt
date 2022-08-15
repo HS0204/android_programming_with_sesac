@@ -1,4 +1,4 @@
-package hs.project.secondweek
+package hs.project.secondweek.Service
 
 import android.app.Application
 import android.app.NotificationChannel
