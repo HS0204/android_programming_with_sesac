@@ -34,7 +34,7 @@ class RecyclerViewAdapter(private val context: Context, private val dataList: Ar
             content.text = data.content
 
             if (position >= checkboxList.size) {
-                checkboxList.add(position, CheckboxData(data.num, false))
+                checkboxList.add(position, CheckboxData(false))
             }
 
             checkBox.isChecked = checkboxList[position].checked
