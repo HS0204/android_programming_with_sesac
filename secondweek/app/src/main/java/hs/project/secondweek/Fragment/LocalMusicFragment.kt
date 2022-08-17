@@ -61,6 +61,8 @@ class LocalMusicFragment: Fragment() {
         setAdapter()
         musicClickListener()
 
+        binding.musicListSection.setPadding(0, 0, 0, recyclerViewBottomPadding)
+
     }
 
     private fun setAdapter() {

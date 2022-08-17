@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="15dp"
-    tools:context=".ListMusicActivity">
+    android:paddingTop="15dp">
 
     <TextView
         android:id="@+id/list_header_text"
@@ -14,26 +13,31 @@
         android:layout_marginLeft="20dp"
         android:text="재생목록"
         android:textColor="@color/black"
-        android:textStyle="bold"
         android:textSize="20sp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/searching_music"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/list_header_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:src="@drawable/icon_toggle"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/list_header_text" />
+        app:layout_constraintBottom_toBottomOf="@id/list_header_text"
+        app:layout_constraintLeft_toRightOf="@id/list_header_text"
+        app:layout_constraintTop_toTopOf="@id/list_header_text" />
+
     <ImageView
         android:id="@+id/list_header_option"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="20dp"
         android:src="@drawable/icon_option_wheel"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="@id/list_header_text"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/list_header_text" />
 
     <EditText
         android:id="@+id/searching_music"
@@ -58,6 +62,7 @@
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searching_music" />
+
     <TextView
         android:id="@+id/selected_mode_text"
         android:layout_width="wrap_content"
@@ -66,6 +71,7 @@
         app:layout_constraintBaseline_toBaselineOf="@id/selected_mode_switch"
         app:layout_constraintStart_toEndOf="@+id/selected_mode_switch"
         app:layout_constraintTop_toBottomOf="@+id/searching_music" />
+
     <TextView
         android:id="@+id/selected_mode_my_sort"
         android:layout_width="wrap_content"
@@ -75,6 +81,7 @@
         app:layout_constraintEnd_toStartOf="@+id/selected_mode_edit"
         app:layout_constraintStart_toEndOf="@+id/selected_mode_text"
         app:layout_constraintTop_toBottomOf="@+id/searching_music" />
+
     <TextView
         android:id="@+id/selected_mode_edit"
         android:layout_width="wrap_content"
@@ -100,21 +107,13 @@
                 android:id="@+id/music_list_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="13dp"
                 android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="13dp"
                 app:layout_constraintHorizontal_bias="0.4"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
-
-            <TextView
-                android:id="@+id/space"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/music_list_section" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -124,9 +123,9 @@
         android:id="@+id/music_player_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:paddingVertical="10dp"
         android:paddingLeft="20dp"
-        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
@@ -146,9 +145,9 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/music_singer"
-            android:maxLines="1"
             android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/music_singer"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/music_title" />
@@ -157,10 +156,11 @@
             android:id="@+id/music_control"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
             android:src="@drawable/icon_playing"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/music_list"/>
+            app:layout_constraintRight_toLeftOf="@id/music_list"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/music_list"
@@ -168,9 +168,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:src="@drawable/icon_music_list"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

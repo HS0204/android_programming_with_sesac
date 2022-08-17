@@ -169,11 +169,13 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     }
 
     private fun setCover() {
+        // 앨범 아트
         Glide.with(this).load(selectedMusic?.artUri).apply(
             RequestOptions()
                 .placeholder(R.drawable.album_art).fitCenter())
             .into(binding.albumArt)
 
+        // 백그라운드 블러 앨범 아트
         Glide.with(this).load(selectedMusic?.artUri).apply(
             RequestOptions()
                 .placeholder(R.drawable.album_art).centerCrop())

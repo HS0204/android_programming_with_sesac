@@ -16,6 +16,7 @@ import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -46,6 +47,8 @@ var customMusicList = ArrayList<MusicInfoData>()
 var currentSongIndex = 0
 var musicPosition = 0
 
+var recyclerViewBottomPadding = 0
+
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, Owner {
 
@@ -75,6 +78,19 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity - onCreate() 호출")
+
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val miniPlayerHeight = binding.musicPlayerSection.height
+                val bottomNavHeight = binding.bottomNavigation.height
+                Log.d("TEST", "$miniPlayerHeight, $bottomNavHeight")
+
+                recyclerViewBottomPadding = miniPlayerHeight + bottomNavHeight
+
+                binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+
         setContentView(binding.root)
 
         TitleN = binding.musicTitle
@@ -128,12 +144,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onStart()
         Log.d(TAG, "MainActivity - onStart() 호출")
         initializeData()
+        initializeLayout()
     }
 
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "MainActivity - onResume() 호출")
-        initializeLayout()
     }
 
     override fun onPause() {

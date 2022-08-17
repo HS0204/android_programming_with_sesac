@@ -43,6 +43,7 @@ class CustomListMusicActivity : AppCompatActivity() {
 
         setAdapter()
         musicClickListener()
+        Log.d("TEST", "$recyclerViewBottomPadding")
 
         titleCustom = binding.musicTitle
         artistCustom = binding.musicSinger
@@ -75,6 +76,8 @@ class CustomListMusicActivity : AppCompatActivity() {
         Log.d(TAG, "CustomListMusicActivity - onResume() 호출")
         super.onResume()
         initializeMiniPlayer()
+
+        binding.musicListSection.setPadding(0, 0, 0, recyclerViewBottomPadding)
     }
 
     private fun setAdapter() {
@@ -116,6 +119,29 @@ class CustomListMusicActivity : AppCompatActivity() {
                         bottomSheetDialog.setContentView(bottomSheetBinding.root)
 
                         bottomSheetDialog.show()
+
+                        bottomSheetBinding.playBtn.setOnClickListener {
+                            Log.d("MYLOG", "음악 플레이어 $mediaPlayer 재생 | 현재 곡 ${music.title}")
+                            selectedMusic = music
+
+                            mediaPlayer!!.reset()
+                            mediaPlayer!!.setDataSource(music.path)
+                            mediaPlayer!!.prepare()
+                            mediaPlayer!!.start()
+
+                            changeTextTitle = music.title
+                            changeTextArtist = music.artist
+
+                            MainActivity.TitleN?.text = changeTextTitle
+                            MainActivity.ArtistN?.text = changeTextArtist
+                            MainActivity.PlayN?.setImageResource(R.drawable.icon_pause)
+
+                            titleCustom?.text = changeTextTitle
+                            artistCustom?.text = changeTextArtist
+                            playBtnCustom?.setImageResource(R.drawable.icon_pause)
+
+                            bottomSheetDialog.dismiss()
+                        }
 
                         bottomSheetBinding.moveUpBtn.setOnClickListener {
                             if (position != 0) musicListAdapter.swapData(position, position-1)

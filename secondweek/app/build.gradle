@@ -6,6 +6,14 @@ plugins {
 android {
     compileSdk 32
 
+    task wrapper(type: Wrapper) {
+        gradleVersion = '7.0'
+    }
+
+    task prepareKotlinBuildScriptModel {
+
+    }
+
     defaultConfig {
         applicationId "hs.project.secondweek"
         minSdk 21

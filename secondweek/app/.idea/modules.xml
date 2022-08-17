@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1107530405/secondWeek.iml" filepath="$PROJECT_DIR$/.idea/modules/1107530405/secondWeek.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/secondWeek.app.iml" filepath="$PROJECT_DIR$/.idea/modules/secondWeek.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/secondWeek.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/secondWeek.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/secondWeek.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/secondWeek.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/secondWeek.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/secondWeek.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1052046161/secondWeek.spinner.iml" filepath="$PROJECT_DIR$/.idea/modules/-1052046161/secondWeek.spinner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1052046161/secondWeek.spinner.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/-1052046161/secondWeek.spinner.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1052046161/secondWeek.spinner.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-1052046161/secondWeek.spinner.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1052046161/secondWeek.spinner.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/-1052046161/secondWeek.spinner.unitTest.iml" />
+    </modules>
+  </component>
+</project>

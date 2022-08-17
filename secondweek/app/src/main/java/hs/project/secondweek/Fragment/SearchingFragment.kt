@@ -15,6 +15,7 @@ import hs.project.secondweek.Data.SearchingEditorData
 import hs.project.secondweek.Data.SearchingTagData
 import hs.project.secondweek.R
 import hs.project.secondweek.databinding.FragmentSearchingBinding
+import hs.project.secondweek.recyclerViewBottomPadding
 
 class SearchingFragment : Fragment() {
 
@@ -61,6 +62,8 @@ class SearchingFragment : Fragment() {
 
         initializeData()
         setAdapter()
+
+        binding.editorMusicRecommended.setPadding(0, 0, 0, recyclerViewBottomPadding)
     }
 
     private fun initializeData() {

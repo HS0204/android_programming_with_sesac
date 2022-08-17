@@ -6,6 +6,10 @@ plugins {
 android {
     compileSdk 32
 
+    task prepareKotlinBuildScriptModel {
+
+    }
+
     defaultConfig {
         applicationId "hs.projects.recyclerview"
         minSdk 21

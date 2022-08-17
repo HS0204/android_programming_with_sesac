@@ -18,6 +18,7 @@ import hs.project.secondweek.Data.VideoMusicData
 import hs.project.secondweek.MainActivity
 import hs.project.secondweek.R
 import hs.project.secondweek.databinding.FragmentHomeBinding
+import hs.project.secondweek.recyclerViewBottomPadding
 
 class HomeFragment: Fragment() {
 
@@ -76,6 +77,7 @@ class HomeFragment: Fragment() {
         initializeData()
         setAdapter()
 
+        binding.videoMusicSection.setPadding(0, 0, 0, recyclerViewBottomPadding)
     }
 
     private fun initializeData() {

@@ -12,6 +12,7 @@ import hs.project.secondweek.Adapter.Music4uAdapter
 import hs.project.secondweek.Data.Music4uData
 import hs.project.secondweek.R
 import hs.project.secondweek.databinding.FragmentMusic4uBinding
+import hs.project.secondweek.recyclerViewBottomPadding
 
 class Music4UFragment: Fragment() {
 
@@ -55,6 +56,8 @@ class Music4UFragment: Fragment() {
 
         initializeData()
         setAdapter()
+
+        binding.music4uSection.setPadding(0, 0, 0, recyclerViewBottomPadding)
     }
 
     private fun initializeData() {
