@@ -294,15 +294,13 @@
         app:layout_constraintTop_toBottomOf="@id/alot_section"
         app:tabGravity="start"
         app:tabIndicatorColor="@color/black"
-        app:tabSelectedTextColor="@color/black">
+        app:tabSelectedTextColor="@color/black"
+        app:tabTextAppearance="@style/my_music_tab_style">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="내 앨범"
-            android:textColor="@color/black"
-            android:textSize="19sp"
-            android:textStyle="bold" />
+            android:text="내 앨범" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -325,9 +323,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="left"
             android:text="새로 만들기"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/frame_my_sort"
@@ -336,16 +335,18 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="내 정렬순"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/frame_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="right"
             android:text="편집"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="14sp"/>
 
     </LinearLayout>
 

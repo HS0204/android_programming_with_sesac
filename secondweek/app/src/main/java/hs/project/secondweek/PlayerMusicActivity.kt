@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
 import android.text.TextUtils
 import android.util.Log
@@ -27,7 +26,6 @@ var totalTime: Int = 0
 class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
     private val binding by lazy { ActivityPlayermusicBinding.inflate(layoutInflater) }
-    val handler = Handler()
 
     var tempMusicList = ArrayList<MusicInfoData>()
 
@@ -116,7 +114,6 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "PlayerMusicActivity - onStop() 호출")
-        handler.removeMessages(0)
     }
 
     override fun onRestart() {
@@ -184,15 +181,14 @@ class PlayerMusicActivity : AppCompatActivity(), ServiceConnection {
 
     private fun initializeSeekBar() {
         Log.d(TAG, "PlayerMusicActivity - seekBar 초기화")
-        val controlBtn = binding.controlIcon
         val seekBar = binding.musicBar
         seekBar.max = mediaPlayer!!.duration
 
-        handler.postDelayed(object: Runnable {
+        seekBarHandler.postDelayed(object: Runnable {
             override fun run() {
                 try {
                     seekBar.progress = mediaPlayer!!.currentPosition
-                    handler.postDelayed(this, 1000)
+                    seekBarHandler.postDelayed(this, 1000)
 
                     var currentTime = formatDuration((mediaPlayer!!.currentPosition).toLong())
                     var endTime = formatDuration((mediaPlayer!!.duration).toLong())

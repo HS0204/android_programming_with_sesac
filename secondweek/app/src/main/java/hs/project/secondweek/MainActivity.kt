@@ -9,6 +9,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
@@ -18,6 +19,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.ViewTreeObserver
 import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -49,6 +51,7 @@ var musicPosition = 0
 
 var recyclerViewBottomPadding = 0
 
+val seekBarHandler = Handler()
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, Owner {
 
@@ -79,11 +82,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity - onCreate() 호출")
 
-        binding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 val miniPlayerHeight = binding.musicPlayerSection.height
                 val bottomNavHeight = binding.bottomNavigation.height
-                Log.d("TEST", "$miniPlayerHeight, $bottomNavHeight")
 
                 recyclerViewBottomPadding = miniPlayerHeight + bottomNavHeight
 
@@ -150,6 +153,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "MainActivity - onResume() 호출")
+        initializeSeekBar()
     }
 
     override fun onPause() {
@@ -170,7 +174,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "MainActivity - onDestroy() 호출")
-
+        seekBarHandler.removeMessages(0)
     }
 
     private fun requestPermission() {
@@ -219,6 +223,37 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         localMusicList = getMusic()
     }
 
+    private fun initializeSeekBar() {
+        val seekBar = binding.musicBar
+        seekBar.max = mediaPlayer!!.duration
+        seekBar.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
+                    if (fromUser) mediaPlayer!!.seekTo(progress)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            }
+        )
+
+        seekBarHandler.postDelayed(object : Runnable {
+            override fun run() {
+                try {
+                    seekBar.progress = mediaPlayer!!.currentPosition
+                    seekBarHandler.postDelayed(this, 1000)
+
+                } catch (e: Exception) {
+                    seekBar.progress = 0
+                }
+            }
+        }, 0)
+    }
+
     @SuppressLint("Recycle", "Range")
     private fun getMusic(): ArrayList<MusicInfoData> {
         val tempList = ArrayList<MusicInfoData>()
@@ -241,13 +276,19 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         if (cursor != null) {
             if (cursor.moveToFirst())
                 do {
-                    val titleC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
+                    val titleC =
+                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
                     val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
-                    val albumC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
-                    val artistC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
+                    val albumC =
+                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
+                    val artistC =
+                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
                     val pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
-                    val durationC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
-                    val albumIdC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)).toString()
+                    val durationC =
+                        cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
+                    val albumIdC =
+                        cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
+                            .toString()
                     val uri = Uri.parse("content://media/external/audio/albumart")
                     val artUriC = Uri.withAppendedPath(uri, albumIdC).toString()
 
@@ -262,7 +303,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                     )
                     val file = File(music.path)
 
-                    if(file.exists()) {
+                    if (file.exists()) {
                         tempList.add(music)
                     }
                 } while (cursor.moveToNext())
@@ -298,7 +339,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            Log.d(TAG,"callStateListener 버전 이상 동작")
+            Log.d(TAG, "callStateListener 버전 이상 동작")
             telephonyManager?.registerTelephonyCallback(
                 mainExecutor,
                 object : TelephonyCallback(), TelephonyCallback.CallStateListener {
@@ -321,9 +362,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
                 }
             )
-        }
-        else {
-            Log.d(TAG,"callStateListener 버전 이하 동작")
+        } else {
+            Log.d(TAG, "callStateListener 버전 이하 동작")
             phoneStateListener = object : PhoneStateListener() {
                 override fun onCallStateChanged(state: Int, incomingNumber: String) {
 
@@ -356,27 +396,32 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             R.id.menu_home -> {
                 Log.d(TAG, "MainActivity - 홈 클릭")
                 homeFragment = HomeFragment.newInstance()
-                transaction.replace(binding.viewSection.id, homeFragment, "home").addToBackStack(null)
+                transaction.replace(binding.viewSection.id, homeFragment, "home")
+                    .addToBackStack(null)
             }
             R.id.menu_music4U -> {
                 Log.d(TAG, "MainActivity - 뮤직4U 클릭")
                 music4UFragment = Music4UFragment.newInstance()
-                transaction.replace(binding.viewSection.id, music4UFragment, "music4U").addToBackStack(null)
+                transaction.replace(binding.viewSection.id, music4UFragment, "music4U")
+                    .addToBackStack(null)
             }
             R.id.menu_my_music -> {
                 Log.d(TAG, "MainActivity - 내 음악 클릭")
                 myMusicFragment = MyMusicFragment.newInstance()
-                transaction.replace(binding.viewSection.id, myMusicFragment, "myMusic").addToBackStack(null)
+                transaction.replace(binding.viewSection.id, myMusicFragment, "myMusic")
+                    .addToBackStack(null)
             }
             R.id.menu_searching -> {
                 Log.d(TAG, "MainActivity - 탐색 클릭")
                 searchingFragment = SearchingFragment.newInstance()
-                transaction.replace(binding.viewSection.id, searchingFragment, "searching").addToBackStack(null)
+                transaction.replace(binding.viewSection.id, searchingFragment, "searching")
+                    .addToBackStack(null)
             }
             R.id.menu_always -> {
                 Log.d(TAG, "MainActivity - 24/7 클릭")
                 alwaysFragment = AlwaysFragment.newInstance()
-                transaction.replace(binding.viewSection.id, alwaysFragment, "always").addToBackStack(null)
+                transaction.replace(binding.viewSection.id, alwaysFragment, "always")
+                    .addToBackStack(null)
             }
         }
         transaction.addToBackStack(null)
