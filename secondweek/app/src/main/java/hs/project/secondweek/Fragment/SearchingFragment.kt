@@ -1,5 +1,6 @@
 package hs.project.secondweek.Fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import hs.project.secondweek.Adapter.SearchingEditorAdapter
 import hs.project.secondweek.Adapter.SearchingTagAdapter
 import hs.project.secondweek.Data.SearchingEditorData
 import hs.project.secondweek.Data.SearchingTagData
+import hs.project.secondweek.Owner
 import hs.project.secondweek.R
 import hs.project.secondweek.databinding.FragmentSearchingBinding
 import hs.project.secondweek.recyclerViewBottomPadding
@@ -20,6 +22,7 @@ import hs.project.secondweek.recyclerViewBottomPadding
 class SearchingFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchingBinding
+    lateinit var owner:Owner
 
     private lateinit var recyclerViewTag: RecyclerView
     private lateinit var adapterTag: SearchingTagAdapter
@@ -45,6 +48,12 @@ class SearchingFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        owner = context as Owner
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -64,6 +73,9 @@ class SearchingFragment : Fragment() {
         setAdapter()
 
         binding.editorMusicRecommended.setPadding(0, 0, 0, recyclerViewBottomPadding)
+        binding.searchingBar.setOnClickListener {
+            owner.replaceFragment(ITunesSearchingFragment.newInstance())
+        }
     }
 
     private fun initializeData() {
