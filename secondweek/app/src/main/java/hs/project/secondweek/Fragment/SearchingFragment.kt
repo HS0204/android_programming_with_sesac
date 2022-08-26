@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -74,9 +75,20 @@ class SearchingFragment : Fragment() {
 
         binding.editorMusicRecommended.setPadding(0, 0, 0, recyclerViewBottomPadding)
         binding.searchingBar.setOnClickListener {
-            owner.replaceFragment(ITunesSearchingFragment.newInstance())
+            keyBoardUp()
+            owner.replaceFragment(SearchedFragment.newInstance())
         }
     }
+
+    private fun keyBoardUp() {
+        val keyboardAutoUpload = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        keyboardAutoUpload.toggleSoftInput(
+            InputMethodManager.SHOW_FORCED,
+            InputMethodManager.HIDE_IMPLICIT_ONLY
+        )
+    }
+
 
     private fun initializeData() {
         Log.d(Music4UFragment.TAG, "SearchingFragment - 데이터 초기화")
