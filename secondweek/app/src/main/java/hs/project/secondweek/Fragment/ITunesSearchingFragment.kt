@@ -1,11 +1,13 @@
 package hs.project.secondweek.Fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -58,6 +60,8 @@ class ITunesSearchingFragment : Fragment() {
         Log.d(TAG, "ITunesSearchingFragment - onCreateView() 호출")
         binding = FragmentItunesSearchingBinding.inflate(inflater, container, false)
 
+        binding.searchingBar.setText(keyword)
+
         return binding.root
     }
 
@@ -71,11 +75,17 @@ class ITunesSearchingFragment : Fragment() {
             if (i == KeyEvent.KEYCODE_ENTER) {
                 keyword = binding.searchingBar.text.toString()
                 initializeData()
+                keyBoardDown()
             }
             true
         })
 
         binding.searchedArtist.setPadding(0, 0, 0, recyclerViewBottomPadding)
+    }
+
+    private fun keyBoardDown() {
+        val keyBoardDown = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        keyBoardDown.hideSoftInputFromWindow(binding.searchingBar.windowToken, 0)
     }
 
     override fun onResume() {

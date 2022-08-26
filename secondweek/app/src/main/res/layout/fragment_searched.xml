@@ -33,7 +33,9 @@
                 android:hint=" 검색어를 입력하세요."
                 android:textSize="15sp"
                 android:singleLine="true"
-                android:maxLines="1"/>
+                android:maxLines="1">
+                <requestFocus />
+            </EditText>
 
         </LinearLayout>
 
