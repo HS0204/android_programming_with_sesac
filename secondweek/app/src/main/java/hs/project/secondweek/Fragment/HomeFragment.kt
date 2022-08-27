@@ -1,5 +1,6 @@
 package hs.project.secondweek.Fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -75,18 +76,31 @@ class HomeFragment: Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // 프래그먼트 뷰 초기값 설정 -> RecyclerView 어댑터 등
         Log.d(TAG, "HomeFragment - onViewCreated() 호출")
         super.onViewCreated(view, savedInstanceState)
 
+        if (isLogin) {
+            binding.recommendedMusicHeader.text = "${userName}님을 위한 추천"
+            binding.recommendedMusicHeader.visibility = View.VISIBLE
+            binding.recommendedMusicSection.visibility = View.VISIBLE
+        }
+        else {
+            binding.recommendedMusicHeader.visibility = View.GONE
+            binding.recommendedMusicSection.visibility = View.GONE
+        }
+
         initializeData()
         setAdapter()
 
         binding.optionIcon.setOnClickListener {
-            owner.replaceFragment(SettingFragment.newInstance())
             MainActivity.miniPlayer!!.visibility = View.INVISIBLE
             MainActivity.bottomNav!!.visibility = View.INVISIBLE
+
+            owner.replaceFragment(SettingFragment.newInstance())
+
         }
 
         MainActivity.miniPlayer!!.visibility = View.VISIBLE

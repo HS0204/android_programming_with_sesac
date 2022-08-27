@@ -12,8 +12,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         jcenter()
+        maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
     }
+
 }
 rootProject.name = "secondWeek"
 include ':app'
-include ':spinner'

@@ -19,18 +19,142 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/login_btn"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:id="@+id/user_section"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="20dp"
-            android:text="로그인/회원가입"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintTop_toBottomOf="@id/header_back"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_back" />
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/logout_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/login_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="20dp"
+                    android:text="로그인/회원가입"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/login_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/login_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="20dp"
+                    android:src="@drawable/icon_home"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:text="lhanseul"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    app:layout_constraintLeft_toRightOf="@id/login_icon"
+                    app:layout_constraintTop_toTopOf="@id/login_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/login_icon"/>
+
+                <TextView
+                    android:id="@+id/user_info_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gray_stroke"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="3dp"
+                    android:text="내 정보"
+                    app:layout_constraintBottom_toBottomOf="@id/login_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/login_icon" />
+
+                <TextView
+                    android:id="@+id/user_rank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    android:text="회원님은 VIP 등급입니다."
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/login_icon"/>
+
+                <TextView
+                    android:id="@+id/vip_certification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:text="VIP 인증"
+                    android:textColor="@color/white"
+                    android:background="@drawable/black_bg"
+                    app:layout_constraintTop_toTopOf="@id/user_rank"
+                    app:layout_constraintBottom_toBottomOf="@id/user_rank"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <TextView
+                    android:id="@+id/user_voucher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="20dp"
+                    android:text="무제한 듣기(매월)"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/user_rank"/>
+
+                <TextView
+                    android:id="@+id/user_period"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="20dp"
+                    android:text="2022.09.04.16:39까지"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/user_voucher"/>
+
+                <!--크루 관리-->
+                <ImageView
+                    android:id="@+id/crew_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="20dp"
+                    android:src="@drawable/icon_home"
+                    app:layout_constraintRight_toLeftOf="@id/crew_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/user_period" />
+
+                <TextView
+                    android:id="@+id/crew_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="크루 관리"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@id/crew_icon"
+                    app:layout_constraintLeft_toRightOf="@id/crew_icon"
+                    app:layout_constraintTop_toTopOf="@id/crew_icon" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
 
         <!--이용권 구매-->
         <ImageView
@@ -41,7 +165,7 @@
             android:src="@drawable/icon_voucher"
             app:layout_constraintRight_toLeftOf="@id/voucher_text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_btn" />
+            app:layout_constraintTop_toBottomOf="@id/user_section" />
 
         <TextView
             android:id="@+id/voucher_text"

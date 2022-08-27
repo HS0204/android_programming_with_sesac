@@ -54,6 +54,9 @@ var recyclerViewBottomPadding = 0
 
 val seekBarHandler = Handler()
 
+var isLogin: Boolean = false
+var userName: String = ""
+
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, Owner {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
