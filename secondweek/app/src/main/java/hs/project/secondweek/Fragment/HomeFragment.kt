@@ -1,5 +1,6 @@
 package hs.project.secondweek.Fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,20 +10,19 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import hs.project.secondweek.*
 import hs.project.secondweek.Adapter.NewMusicAdapter
 import hs.project.secondweek.Adapter.RecommendedMusicAdapter
 import hs.project.secondweek.Adapter.VideoMusicAdapter
 import hs.project.secondweek.Data.NewMusicData
 import hs.project.secondweek.Data.RecommendedMusicData
 import hs.project.secondweek.Data.VideoMusicData
-import hs.project.secondweek.MainActivity
-import hs.project.secondweek.R
 import hs.project.secondweek.databinding.FragmentHomeBinding
-import hs.project.secondweek.recyclerViewBottomPadding
 
 class HomeFragment: Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
+    lateinit var owner:Owner
 
     private lateinit var recommendedRecyclerView: RecyclerView
     private lateinit var recommendedMusicAdapter: RecommendedMusicAdapter
@@ -57,6 +57,12 @@ class HomeFragment: Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        owner = context as Owner
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -76,6 +82,15 @@ class HomeFragment: Fragment() {
 
         initializeData()
         setAdapter()
+
+        binding.optionIcon.setOnClickListener {
+            owner.replaceFragment(SettingFragment.newInstance())
+            MainActivity.miniPlayer!!.visibility = View.INVISIBLE
+            MainActivity.bottomNav!!.visibility = View.INVISIBLE
+        }
+
+        MainActivity.miniPlayer!!.visibility = View.VISIBLE
+        MainActivity.bottomNav!!.visibility = View.VISIBLE
 
         binding.videoMusicSection.setPadding(0, 0, 0, recyclerViewBottomPadding)
     }

@@ -23,6 +23,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -76,6 +77,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         var ArtistN: TextView? = null
         var PlayN: ImageView? = null
         var List: ImageView? = null
+
+        var miniPlayer: ConstraintLayout? = null
+        var bottomNav: BottomNavigationView? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,6 +104,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         ArtistN = binding.musicSinger
         PlayN = binding.musicControl
         List = binding.musicList
+        miniPlayer = binding.musicPlayerSection
+        bottomNav = binding.bottomNavigation
 
         requestPermission()
         callStateListener()

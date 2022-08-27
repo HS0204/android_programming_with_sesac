@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_baseline_home_24"/>
+                android:src="@drawable/icon_back"/>
 
             <EditText
                 android:id="@+id/searching_bar"
