@@ -27,6 +27,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "KAKAO_API_KEY", properties["kakao_api_key"]
+        buildConfigField "String", "KAKAO_IMAGE_API_AUTH", properties["kakao_image_search_auth"]
         resValue "string", "kakao_oauth_host", properties["kakao_oauth_host"]
     }
 

@@ -1,10 +1,11 @@
 package hs.project.secondweek
 
+import hs.project.secondweek.Data.ArtistImgData
 import hs.project.secondweek.Data.MusicITunesData
 import hs.project.secondweek.Data.MusicSimilarData
-import hs.project.secondweek.Data.Similar
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface SearchingService {
@@ -25,5 +26,14 @@ interface SearchingService {
         @Query("type") type: String,
         @Query("limit") limit: Int
     ): Call<MusicSimilarData>
+
+    // https://dapi.kakao.com/v2/search/image?query={target}&page={page}&size={size}
+    @GET("image?")
+    fun searchArtistImg(
+        @Header("Authorization") auth: String?,
+        @Query("query") target: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): Call<ArtistImgData>
 
 }
