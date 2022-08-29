@@ -66,7 +66,7 @@ class MusicSearchArtistAdapter(
                 .build()
 
             val service: SearchingService = retrofit.create(SearchingService::class.java)
-            val searchingMusic = service.searchArtistImg(BuildConfig.KAKAO_IMAGE_API_AUTH, keyword, 1, 1)
+            val searchingMusic = service.searchArtistImg(auth = BuildConfig.KAKAO_IMAGE_API_AUTH, target = keyword, page = 1, size = 1)
 
             searchingMusic.enqueue(object: Callback<ArtistImgData> {
                 override fun onResponse(

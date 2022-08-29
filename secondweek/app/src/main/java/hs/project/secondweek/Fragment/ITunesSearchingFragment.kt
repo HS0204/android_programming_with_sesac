@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import hs.project.secondweek.Adapter.MusicITunesAdapter
+import hs.project.secondweek.Adapter.MusicITunesAlbumAdapter
 import hs.project.secondweek.Adapter.MusicSearchArtistAdapter
 import hs.project.secondweek.Data.*
 import hs.project.secondweek.Owner
@@ -86,13 +87,23 @@ class ITunesSearchingFragment : Fragment() {
     }
 
     private fun setMusicAdapter(data: List<ITunesResult>) {
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        val recyclerView = binding.searchedMusic
-        recyclerView.layoutManager = layoutManager
-        recyclerView.setHasFixedSize(true)
+        // 곡
+        val songLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val songRecyclerView = binding.searchedMusic
+        songRecyclerView.layoutManager = songLayoutManager
+        songRecyclerView.setHasFixedSize(true)
 
-        val adapter = MusicITunesAdapter(requireContext(), data)
-        recyclerView.adapter = adapter
+        val songAdapter = MusicITunesAdapter(requireContext(), data)
+        songRecyclerView.adapter = songAdapter
+
+        // 앨범
+        val albumLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val albumRecyclerView = binding.searchedAlbum
+        albumRecyclerView.layoutManager = albumLayoutManager
+        albumRecyclerView.setHasFixedSize(true)
+
+        val albumAdapter = MusicITunesAlbumAdapter(requireContext(), data)
+        albumRecyclerView.adapter = albumAdapter
 
     }
 
@@ -115,7 +126,7 @@ class ITunesSearchingFragment : Fragment() {
             .build()
 
         val service: SearchingService = retrofit.create(SearchingService::class.java)
-        val searchingMusic = service.getMusic(keyword, 5, "song")
+        val searchingMusic = service.getMusic(keyword, count = 5, kind = "song")
 
         searchingMusic.enqueue(object: Callback<MusicITunesData> {
             override fun onResponse(
@@ -148,7 +159,7 @@ class ITunesSearchingFragment : Fragment() {
             .build()
 
         val service: SearchingService = retrofit.create(SearchingService::class.java)
-        val searchingArtist = service.searchSimilarArtist(keyword, 1, "music", 3)
+        val searchingArtist = service.searchSimilarArtist(targetArtist = keyword, info = 1, type = "music", limit = 3)
 
         searchingArtist.enqueue(object : Callback<MusicSimilarData> {
             override fun onResponse(call: Call<MusicSimilarData>, response: Response<MusicSimilarData>) {
