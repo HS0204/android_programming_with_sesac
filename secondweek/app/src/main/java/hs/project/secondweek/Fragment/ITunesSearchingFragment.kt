@@ -122,20 +122,20 @@ class ITunesSearchingFragment : Fragment() {
                 call: Call<MusicITunesData>,
                 response: Response<MusicITunesData>
             ) {
+                Log.d("Retrofit", "곡 찾기 | 현재 키워드 : $keyword")
                 val body = response.body()
 
                 if (body != null) {
-                    Log.d("TEST", "곡 찾기 | 현재 키워드 : $keyword")
-                    Log.d("TEST", "곡 찾기 | 통신 성공")
+                    Log.d("Retrofit", "곡 찾기 | 통신 성공")
                     setMusicAdapter(body.results)
                 }
                 else {
-                    Log.d("TEST","곡 찾기 | 바디 null")
+                    Log.d("Retrofit","곡 찾기 | 바디 null")
                 }
             }
 
             override fun onFailure(call: Call<MusicITunesData>, t: Throwable) {
-                Log.d("TEST", "곡 찾기 | 통신 실패", t)
+                Log.d("Retrofit", "곡 찾기 | 통신 실패", t)
             }
         })
     }
@@ -152,11 +152,11 @@ class ITunesSearchingFragment : Fragment() {
 
         searchingArtist.enqueue(object : Callback<MusicSimilarData> {
             override fun onResponse(call: Call<MusicSimilarData>, response: Response<MusicSimilarData>) {
+                Log.d("Retrofit", "가수 찾기 | 현재 키워드 : $keyword")
                 val body = response.body()
 
                 if (body != null) {
-                    Log.d("TEST", "가수 찾기 | 현재 키워드 : $keyword")
-                    Log.d("TEST", "가수 찾기 | 통신 성공")
+                    Log.d("Retrofit", "가수 찾기 | 통신 성공")
                     var artistList = ArrayList<SimilarArtist>()
 
                     for (i in 0 until body.Similar.Info.size) {
@@ -170,12 +170,12 @@ class ITunesSearchingFragment : Fragment() {
                     setArtistAdapter(artistList)
                 }
                 else {
-                    Log.d("TEST","가수 찾기 | 바디 null")
+                    Log.d("Retrofit","가수 찾기 | 바디 null")
                 }
             }
 
             override fun onFailure(call: Call<MusicSimilarData>, t: Throwable) {
-                Log.d("TEST", "가수 찾기 | 통신 실패", t)
+                Log.d("Retrofit", "가수 찾기 | 통신 실패", t)
             }
 
         })

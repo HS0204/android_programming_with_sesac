@@ -11,12 +11,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import hs.project.secondweek.BuildConfig
 import hs.project.secondweek.Data.ArtistImgData
-import hs.project.secondweek.Data.MusicITunesData
 import hs.project.secondweek.Data.SimilarArtist
-import hs.project.secondweek.Fragment.keyword
 import hs.project.secondweek.R
 import hs.project.secondweek.SearchingService
 import hs.project.secondweek.databinding.LayoutMusicListBinding
+import hs.project.secondweek.databinding.LayoutMusicListSearchedBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,7 +30,7 @@ class MusicSearchArtistAdapter(
         parent: ViewGroup,
         viewType: Int
     ): MusicSearchArtistAdapter.SearchArtistViewHolder {
-        val view = LayoutMusicListBinding.inflate(LayoutInflater.from(context), parent, false)
+        val view = LayoutMusicListSearchedBinding.inflate(LayoutInflater.from(context), parent, false)
         return SearchArtistViewHolder(view)
     }
 
@@ -46,20 +45,20 @@ class MusicSearchArtistAdapter(
         return artistList.size
     }
 
-    inner class SearchArtistViewHolder(binding: LayoutMusicListBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SearchArtistViewHolder(binding: LayoutMusicListSearchedBinding) : RecyclerView.ViewHolder(binding.root) {
         private val image: ImageView = binding.musicListImg
         private val name: TextView = binding.musicListTitle
         private val genre: TextView = binding.musicListSinger
-        private val favorite: TextView = binding.musicListTime
+        private val favorite: ImageView = binding.musicListIcon
 
         fun bindArtist(info: SimilarArtist) {
             name.text = info.Name
             genre.text = info.wTeaser
-            favorite.text = "하트 아이콘"
+            favorite.setImageResource(R.drawable.icon_favorite)
             searchingMusic(info.Name)
         }
 
-        fun searchingMusic(keyword: String) {
+        private fun searchingMusic(keyword: String) {
             val baseUrl = "https://dapi.kakao.com/v2/search/"
             val retrofit = Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -74,22 +73,22 @@ class MusicSearchArtistAdapter(
                     call: Call<ArtistImgData>,
                     response: Response<ArtistImgData>
                 ) {
-                    Log.d("TEST", "이미지 찾기 | 현재 키워드 : $keyword")
+                    Log.d("Retrofit", "이미지 찾기 | 현재 키워드 : $keyword")
                     val body = response.body()
 
                     if (body != null) {
-                        Log.d("TEST", "이미지 찾기 | 통신 성공")
+                        Log.d("Retrofit", "이미지 찾기 | 통신 성공")
                         Glide.with(context).load(body.documents[0].thumbnail_url)
                             .apply(RequestOptions().placeholder(R.drawable.album_art)).fitCenter()
                             .into(image)
                     }
                     else {
-                        Log.d("TEST","곡 찾기 | 바디 null")
+                        Log.d("Retrofit","곡 찾기 | 바디 null")
                     }
                 }
 
                 override fun onFailure(call: Call<ArtistImgData>, t: Throwable) {
-                    Log.d("TEST", "이미지 찾기 | 통신 실패", t)
+                    Log.d("Retrofit", "이미지 찾기 | 통신 실패", t)
                 }
             })
         }

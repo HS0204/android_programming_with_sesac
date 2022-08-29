@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import hs.project.secondweek.Data.ITunesResult
 import hs.project.secondweek.R
 import hs.project.secondweek.databinding.LayoutMusicListBinding
+import hs.project.secondweek.databinding.LayoutMusicListSearchedBinding
 
 class MusicITunesAdapter(
     private val context: Context,
@@ -18,7 +19,7 @@ class MusicITunesAdapter(
 ) : RecyclerView.Adapter<MusicITunesAdapter.MusicITunesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicITunesViewHolder {
-        val view = LayoutMusicListBinding.inflate(LayoutInflater.from(context), parent, false)
+        val view = LayoutMusicListSearchedBinding.inflate(LayoutInflater.from(context), parent, false)
         return MusicITunesViewHolder(view)
     }
 
@@ -30,19 +31,16 @@ class MusicITunesAdapter(
         return musicList.size
     }
 
-    inner class MusicITunesViewHolder (binding: LayoutMusicListBinding) : RecyclerView.ViewHolder(binding.root) {
-        val root = binding.root
-        private val option = binding.musicListOption
-
+    inner class MusicITunesViewHolder (binding: LayoutMusicListSearchedBinding) : RecyclerView.ViewHolder(binding.root) {
         private val setCover: ImageView = binding.musicListImg
         private val songTitle: TextView = binding.musicListTitle
         private val songArtist: TextView = binding.musicListSinger
-        private val songTime: TextView = binding.musicListTime
+        private val songPlay: ImageView = binding.musicListIcon
 
         fun bindMusic(musicInfo: ITunesResult) {
             songTitle.text = musicInfo.trackName
             songArtist.text = musicInfo.artistName
-            songTime.text = "재생 아이콘"
+            songPlay.setImageResource(R.drawable.icon_playing)
             Glide.with(context).load(musicInfo.artworkUrl100)
                 .apply(RequestOptions().placeholder((R.drawable.album_art)).fitCenter())
                 .into(setCover)
