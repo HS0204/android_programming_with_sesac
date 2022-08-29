@@ -157,8 +157,17 @@ class ITunesSearchingFragment : Fragment() {
                 if (body != null) {
                     Log.d("TEST", "가수 찾기 | 현재 키워드 : $keyword")
                     Log.d("TEST", "가수 찾기 | 통신 성공")
-                    //Log.d("TEST", "${body.Similar.Results}")
-                    setArtistAdapter(body.Similar.Results)
+                    var artistList = ArrayList<SimilarArtist>()
+
+                    for (i in 0 until body.Similar.Info.size) {
+                        artistList.add(body.Similar.Info[i])
+                    }
+
+                    for (i in 0 until body.Similar.Results.size) {
+                        artistList.add(body.Similar.Results[i])
+                    }
+
+                    setArtistAdapter(artistList)
                 }
                 else {
                     Log.d("TEST","가수 찾기 | 바디 null")

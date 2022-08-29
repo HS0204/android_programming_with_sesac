@@ -5,7 +5,7 @@ data class MusicSimilarData(
 )
 
 data class Similar(
-    val Info: List<TargetArtist>,
+    val Info: List<SimilarArtist>,
     val Results: List<SimilarArtist>
 )
 
