@@ -100,7 +100,7 @@ class UserInfoFragment: Fragment() {
             }
             else {
                 Log.d(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
-                Toast.makeText(requireContext(), "로그아웃에 성공했습니다", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
                 isLogin = false
             }
         }

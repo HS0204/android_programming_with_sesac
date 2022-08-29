@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import hs.project.secondweek.Owner
 import hs.project.secondweek.databinding.FragmentSearchedBinding
@@ -54,14 +53,21 @@ class SearchedFragment : Fragment() {
         Log.d(TAG, "SearchedFragment - onViewCreated() 호출")
         super.onViewCreated(view, savedInstanceState)
 
-        binding.searchingBar.setOnKeyListener(View.OnKeyListener { view, i, keyEvent ->
-            if (i == KeyEvent.KEYCODE_ENTER) {
-                keyBoardDown()
+        binding.searchingBar.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                if (event.action != KeyEvent.ACTION_DOWN) {
+                    return true
+                }
+                when (keyCode) {
+                    KeyEvent.KEYCODE_ENTER -> {
+                        keyBoardDown()
 
-                keyword = binding.searchingBar.text.toString()
-                owner.replaceFragment(ITunesSearchingFragment.newInstance())
+                        keyword = binding.searchingBar.text.toString()
+                        owner.replaceFragment(ITunesSearchingFragment.newInstance())
+                    }
+                }
+                return true
             }
-            true
         })
     }
 

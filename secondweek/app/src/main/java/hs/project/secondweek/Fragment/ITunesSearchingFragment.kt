@@ -10,10 +10,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import hs.project.secondweek.Adapter.MusicITunesAdapter
-import hs.project.secondweek.Data.MusicITunesData
-import hs.project.secondweek.Data.Result
+import hs.project.secondweek.Adapter.MusicSearchArtistAdapter
+import hs.project.secondweek.Data.*
 import hs.project.secondweek.Owner
 import hs.project.secondweek.SearchingService
 import hs.project.secondweek.databinding.FragmentItunesSearchingBinding
@@ -26,25 +25,12 @@ class ITunesSearchingFragment : Fragment() {
     private lateinit var binding: FragmentItunesSearchingBinding
     lateinit var owner:Owner
 
-    private lateinit var musicITunesAdapter: MusicITunesAdapter
-    private lateinit var recyclerView: RecyclerView
-
     companion object {
         const val TAG: String = "MYLOG"
 
         fun newInstance(): ITunesSearchingFragment {
             return ITunesSearchingFragment()
         }
-    }
-
-    object RetrofitClient {
-        private const val baseUrl = "https://itunes.apple.com/"
-        private val retrofit = Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service: SearchingService = retrofit.create(SearchingService::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,27 +74,50 @@ class ITunesSearchingFragment : Fragment() {
         keyBoardDown.hideSoftInputFromWindow(binding.searchingBar.windowToken, 0)
     }
 
+    private fun initializeData() {
+        searchingMusic()
+        similarArtist()
+    }
+
     override fun onResume() {
         // 프래그먼트와 사용자 상호작용 가능 -> 동작, 입력, 포커스 등
         Log.d(TAG, "ITunesSearchingFragment - onResume() 호출")
         super.onResume()
     }
 
-    private fun setAdapter(data: List<Result>) {
+    private fun setMusicAdapter(data: List<ITunesResult>) {
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerView = binding.searchedMusic
+        val recyclerView = binding.searchedMusic
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
 
-        musicITunesAdapter = MusicITunesAdapter(requireContext(), data)
-        recyclerView.adapter = musicITunesAdapter
+        val adapter = MusicITunesAdapter(requireContext(), data)
+        recyclerView.adapter = adapter
 
     }
 
-    private fun initializeData() {
-        val searchingService = RetrofitClient.service.getMusic(keyword, 5, "song")
+    private fun setArtistAdapter(data: List<SimilarArtist>) {
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val recyclerView = binding.searchedArtist
+        recyclerView.layoutManager = layoutManager
+        recyclerView.setHasFixedSize(true)
 
-        searchingService.enqueue(object: Callback<MusicITunesData> {
+        val adapter = MusicSearchArtistAdapter(requireContext(), data)
+        recyclerView.adapter = adapter
+
+    }
+
+    private fun searchingMusic() {
+        val baseUrl = "https://itunes.apple.com/"
+        val retrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service: SearchingService = retrofit.create(SearchingService::class.java)
+        val searchingMusic = service.getMusic(keyword, 5, "song")
+
+        searchingMusic.enqueue(object: Callback<MusicITunesData> {
             override fun onResponse(
                 call: Call<MusicITunesData>,
                 response: Response<MusicITunesData>
@@ -116,18 +125,50 @@ class ITunesSearchingFragment : Fragment() {
                 val body = response.body()
 
                 if (body != null) {
-                    Log.d("TEST", "현재 키워드 : $keyword")
-                    Log.d("TEST", "통신 성공")
-                    setAdapter(body.results)
+                    Log.d("TEST", "곡 찾기 | 현재 키워드 : $keyword")
+                    Log.d("TEST", "곡 찾기 | 통신 성공")
+                    setMusicAdapter(body.results)
                 }
                 else {
-                    Log.d("TEST","바디 null")
+                    Log.d("TEST","곡 찾기 | 바디 null")
                 }
             }
 
             override fun onFailure(call: Call<MusicITunesData>, t: Throwable) {
-                Log.d("TEST", "통신 실패", t)
+                Log.d("TEST", "곡 찾기 | 통신 실패", t)
             }
+        })
+    }
+
+    private fun similarArtist() {
+        val baseUrl = " https://tastedive.com/api/"
+        val retrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service: SearchingService = retrofit.create(SearchingService::class.java)
+        val searchingArtist = service.searchSimilarArtist(keyword, 1, "music", 3)
+
+        searchingArtist.enqueue(object : Callback<MusicSimilarData> {
+            override fun onResponse(call: Call<MusicSimilarData>, response: Response<MusicSimilarData>) {
+                val body = response.body()
+
+                if (body != null) {
+                    Log.d("TEST", "가수 찾기 | 현재 키워드 : $keyword")
+                    Log.d("TEST", "가수 찾기 | 통신 성공")
+                    //Log.d("TEST", "${body.Similar.Results}")
+                    setArtistAdapter(body.Similar.Results)
+                }
+                else {
+                    Log.d("TEST","가수 찾기 | 바디 null")
+                }
+            }
+
+            override fun onFailure(call: Call<MusicSimilarData>, t: Throwable) {
+                Log.d("TEST", "가수 찾기 | 통신 실패", t)
+            }
+
         })
     }
 

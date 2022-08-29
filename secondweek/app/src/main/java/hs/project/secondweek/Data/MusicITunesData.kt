@@ -2,10 +2,10 @@ package hs.project.secondweek.Data
 
 data class MusicITunesData(
     val resultCount: Int,
-    val results: List<Result>
+    val results: List<ITunesResult>
 )
 
-data class Result(
+data class ITunesResult(
     val artistId: Int,
     val artistName: String,
     val artistViewUrl: String,

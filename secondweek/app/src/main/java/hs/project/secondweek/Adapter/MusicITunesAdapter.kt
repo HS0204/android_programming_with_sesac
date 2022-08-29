@@ -8,13 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import hs.project.secondweek.Data.Result
+import hs.project.secondweek.Data.ITunesResult
 import hs.project.secondweek.R
 import hs.project.secondweek.databinding.LayoutMusicListBinding
 
 class MusicITunesAdapter(
     private val context: Context,
-    private val musicList: List<Result>
+    private val musicList: List<ITunesResult>
 ) : RecyclerView.Adapter<MusicITunesAdapter.MusicITunesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicITunesViewHolder {
@@ -39,10 +39,10 @@ class MusicITunesAdapter(
         private val songArtist: TextView = binding.musicListSinger
         private val songTime: TextView = binding.musicListTime
 
-        fun bindMusic(musicInfo: Result) {
+        fun bindMusic(musicInfo: ITunesResult) {
             songTitle.text = musicInfo.trackName
             songArtist.text = musicInfo.artistName
-            songTime.text = "test"
+            songTime.text = "재생 아이콘"
             Glide.with(context).load(musicInfo.artworkUrl100)
                 .apply(RequestOptions().placeholder((R.drawable.album_art)).fitCenter())
                 .into(setCover)
