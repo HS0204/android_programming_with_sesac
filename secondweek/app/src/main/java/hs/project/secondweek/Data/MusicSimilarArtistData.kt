@@ -24,7 +24,8 @@ data class SimilarArtist(
     val wTeaser: String,
     val wUrl: String,
     val yID: String,
-    val yUrl: String
+    val yUrl: String,
+    var imgUrl: String?
 )
 
 data class ArtistImgData(

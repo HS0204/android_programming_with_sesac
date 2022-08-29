@@ -81,4 +81,7 @@ dependencies {
     // kakao login
     implementation "com.kakao.sdk:v2-user:2.11.0"
 
+    // coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
 }

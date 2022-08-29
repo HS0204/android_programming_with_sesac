@@ -55,42 +55,10 @@ class MusicSearchArtistAdapter(
             name.text = info.Name
             genre.text = info.wTeaser
             favorite.setImageResource(R.drawable.icon_favorite)
-            searchingMusic(info.Name)
-        }
+            Glide.with(context).load(info.imgUrl)
+                .apply(RequestOptions().placeholder(R.drawable.album_art)).fitCenter()
+                .into(image)
 
-        private fun searchingMusic(keyword: String) {
-            val baseUrl = "https://dapi.kakao.com/v2/search/"
-            val retrofit = Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
-            val service: SearchingService = retrofit.create(SearchingService::class.java)
-            val searchingMusic = service.searchArtistImg(auth = BuildConfig.KAKAO_IMAGE_API_AUTH, target = keyword, page = 1, size = 1)
-
-            searchingMusic.enqueue(object: Callback<ArtistImgData> {
-                override fun onResponse(
-                    call: Call<ArtistImgData>,
-                    response: Response<ArtistImgData>
-                ) {
-                    Log.d("Retrofit", "이미지 찾기 | 현재 키워드 : $keyword")
-                    val body = response.body()
-
-                    if (body != null) {
-                        Log.d("Retrofit", "이미지 찾기 | 통신 성공")
-                        Glide.with(context).load(body.documents[0].thumbnail_url)
-                            .apply(RequestOptions().placeholder(R.drawable.album_art)).fitCenter()
-                            .into(image)
-                    }
-                    else {
-                        Log.d("Retrofit","곡 찾기 | 바디 null")
-                    }
-                }
-
-                override fun onFailure(call: Call<ArtistImgData>, t: Throwable) {
-                    Log.d("Retrofit", "이미지 찾기 | 통신 실패", t)
-                }
-            })
         }
     }
 }

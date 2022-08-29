@@ -10,21 +10,26 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import hs.project.secondweek.*
 import hs.project.secondweek.Adapter.MusicITunesAdapter
 import hs.project.secondweek.Adapter.MusicITunesAlbumAdapter
 import hs.project.secondweek.Adapter.MusicSearchArtistAdapter
 import hs.project.secondweek.Data.*
-import hs.project.secondweek.Owner
-import hs.project.secondweek.SearchingService
 import hs.project.secondweek.databinding.FragmentItunesSearchingBinding
-import hs.project.secondweek.recyclerViewBottomPadding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Exception
+import kotlin.concurrent.thread
 
 class ITunesSearchingFragment : Fragment() {
 
     private lateinit var binding: FragmentItunesSearchingBinding
-    lateinit var owner:Owner
+
+    private val artistList = ArrayList<SimilarArtist>()
+    private val artistNameList = ArrayList<String>()
 
     companion object {
         const val TAG: String = "MYLOG"
@@ -58,13 +63,20 @@ class ITunesSearchingFragment : Fragment() {
 
         initializeData()
 
-        binding.searchingBar.setOnKeyListener(View.OnKeyListener { view, i, keyEvent ->
-            if (i == KeyEvent.KEYCODE_ENTER) {
-                keyword = binding.searchingBar.text.toString()
-                initializeData()
-                keyBoardDown()
+        binding.searchingBar.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                if (event.action != KeyEvent.ACTION_DOWN) {
+                    return true
+                }
+                when (keyCode) {
+                    KeyEvent.KEYCODE_ENTER -> {
+                        keyword = binding.searchingBar.text.toString()
+                        initializeData()
+                        keyBoardDown()
+                    }
+                }
+                return true
             }
-            true
         })
 
         binding.searchedArtist.setPadding(0, 0, 0, recyclerViewBottomPadding)
@@ -76,6 +88,9 @@ class ITunesSearchingFragment : Fragment() {
     }
 
     private fun initializeData() {
+        artistList.clear()
+        artistNameList.clear()
+
         searchingMusic()
         similarArtist()
     }
@@ -168,17 +183,21 @@ class ITunesSearchingFragment : Fragment() {
 
                 if (body != null) {
                     Log.d("Retrofit", "가수 찾기 | 통신 성공")
-                    var artistList = ArrayList<SimilarArtist>()
 
                     for (i in 0 until body.Similar.Info.size) {
                         artistList.add(body.Similar.Info[i])
+                        artistNameList.add(body.Similar.Info[i].Name)
                     }
 
                     for (i in 0 until body.Similar.Results.size) {
                         artistList.add(body.Similar.Results[i])
+                        artistNameList.add(body.Similar.Results[i].Name)
                     }
 
-                    setArtistAdapter(artistList)
+                    for (i in 0 until artistList.size) {
+                        Log.d("Retrofit","${i+1} / ${artistList.size} 번째 도는 중")
+                        getArtistImg(artistNameList[i], i)
+                    }
                 }
                 else {
                     Log.d("Retrofit","가수 찾기 | 바디 null")
@@ -190,6 +209,45 @@ class ITunesSearchingFragment : Fragment() {
             }
 
         })
+    }
+
+    var count = 0
+    private fun getArtistImg(keyword: String, time: Int) {
+        val baseUrl = "https://dapi.kakao.com/v2/search/"
+        val retrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service: SearchingService = retrofit.create(SearchingService::class.java)
+        val searchingMusic = service.searchArtistImg(auth = BuildConfig.KAKAO_IMAGE_API_AUTH, target = keyword, page = 1, size = 1)
+
+        searchingMusic.enqueue(object : Callback<ArtistImgData> {
+            override fun onResponse(
+                call: Call<ArtistImgData>,
+                response: Response<ArtistImgData>
+            ) {
+                Log.d("Retrofit", "이미지 찾기 | 현재 키워드 : $keyword")
+                val body = response.body()
+
+                if (body != null) {
+                    Log.d("Retrofit", "이미지 찾기 | 통신 성공")
+                    artistList[time].imgUrl = body.documents[0].thumbnail_url
+                    count++
+                    Log.d("Retrofit", "$count 번째 잘 들어갔나.... ${artistList[time].imgUrl}")
+                    if (count == artistList.size) {
+                        setArtistAdapter(artistList)
+                    }
+                } else {
+                    Log.d("Retrofit", "이미지 찾기 | 바디 null")
+                }
+            }
+
+            override fun onFailure(call: Call<ArtistImgData>, t: Throwable) {
+                Log.d("Retrofit", "이미지 찾기 | 통신 실패", t)
+            }
+        })
+
     }
 
     override fun onPause() {
